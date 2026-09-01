@@ -1,0 +1,53 @@
+/* Bethany Jayne site refinements — keeps the existing colour palette and contact-page feel. */
+
+/* Consistent brand icon: centred inside the same circular mark at every breakpoint. */
+.brand { align-items: center; min-height: 2.75rem; }
+.brand-mark {
+  flex: 0 0 2.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: .42rem;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 50%;
+  transform: none;
+}
+
+/* Give the Home item the same visual weight on desktop and mobile. */
+.nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; }
+.nav a[aria-current='page'] { min-width: 4.2rem; padding: 0 .8rem; border-radius: 999px; background: var(--paper-deep); }
+
+/* Home page: clearer hierarchy and a more editorial portfolio composition. */
+body:not(.contact-page) .hero {
+  position: relative;
+  max-width: 100%;
+  min-height: 650px;
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  background: var(--sky);
+}
+body:not(.contact-page) .hero-copy { max-width: 590px; }
+body:not(.contact-page) .hero-copy h1 { font-size: clamp(3.5rem, 6.2vw, 6rem); }
+body:not(.contact-page) .hero-copy p:not(.eyebrow) { max-width: 500px; }
+body:not(.contact-page) .hero-art { max-width: 600px; }
+body:not(.contact-page) .hero-art img { aspect-ratio: 4 / 3; }
+body:not(.contact-page) .work-section { border-radius: 0; }
+body:not(.contact-page) .work-card { border: 1px solid rgba(255,255,255,.08); }
+body:not(.contact-page) .section-intro { align-items: center; }
+
+@media (min-width: 761px) {
+  .site-header { padding-top: 2.8rem; }
+  .nav { min-height: 2.75rem; }
+  body:not(.contact-page) .hero { grid-template-columns: minmax(0, .95fr) minmax(440px, 1.05fr); }
+}
+
+@media (max-width: 760px) {
+  .site-header { align-items: center; }
+  .brand { min-height: 2.75rem; }
+  .brand-mark { flex-basis: 2.75rem; width: 2.75rem; height: 2.75rem; padding: .42rem; }
+  .nav-toggle { min-height: 2.5rem; }
+  .nav a[aria-current='page'] { justify-self: start; }
+  body:not(.contact-page) .hero { padding-top: 3.5rem; padding-bottom: 4.5rem; }
+  body:not(.contact-page) .hero-copy h1 { font-size: clamp(3rem, 14vw, 4.7rem); }
+  body:not(.contact-page) .hero-art { margin-top: 2.75rem; }
+}
