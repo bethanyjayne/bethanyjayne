@@ -1,3 +1,13 @@
+// Shared site behaviour and refinements.
+// Load the shared visual overrides on every page so the header stays consistent.
+if (!document.querySelector('link[data-site-overrides]')) {
+  const overrides = document.createElement('link');
+  overrides.rel = 'stylesheet';
+  overrides.href = './website-overrides.css';
+  overrides.dataset.siteOverrides = 'true';
+  document.head.appendChild(overrides);
+}
+
 const toggle = document.querySelector('.nav-toggle');
 const nav = document.querySelector('.nav');
 
