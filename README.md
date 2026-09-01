@@ -10,7 +10,7 @@ This folder contains the downloaded Wix page snapshots and their shared local as
 - `contact.html` is the contact page snapshot.
 - `assets/` contains the JavaScript bundles and downloaded image media used by every page.
 
-The pages reference `./assets/` so they can be opened from this folder without the original Wix export folders. Some Wix services and fonts remain remote dependencies because they were not downloaded with the snapshots.
+The pages use a small shared CSS and JavaScript layer and reference `./assets/` for the original artwork. The site works as a static GitHub Pages site with no build step.
 
 ## Local preview
 
