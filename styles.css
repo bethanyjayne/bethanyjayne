@@ -184,12 +184,12 @@ h3 { font-size: 1.6rem; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 760px) {
-  .site-header { padding: 1.1rem 1.25rem; align-items: center; }
+  .site-header { padding: calc(1.6rem + .8rem) 1.25rem 1.1rem; align-items: center; }
   .nav-toggle { display: block; padding: .5rem 0; }
   .nav { position: absolute; top: 4.6rem; right: 1.25rem; left: 1.25rem; display: none; padding: 1.1rem; border: 2px solid var(--line); border-radius: 1rem; background: var(--card); box-shadow: var(--shadow); }
   .nav.is-open { display: grid; gap: .4rem; }
   .hero, .page-hero { display: block; min-height: 0; padding: 3.4rem 1.25rem 4.4rem; }
-  .page-hero::after { min-height: 220px; margin: 2.5rem auto 0; transform: rotate(1deg); }
+  .page-hero::after { display: block; width: min(100%, 430px); min-height: 220px; margin: 2.5rem auto 0; transform: rotate(1deg); }
   .about-page .page-hero::after, .storybooks-page .page-hero::after, .contact-page .page-hero::after { min-height: 0; }
   h1 { font-size: clamp(3rem, 15vw, 4.8rem); }
   .hero-copy p { font-size: 1rem; }
