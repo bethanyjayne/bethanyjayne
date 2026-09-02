@@ -1,6 +1,8 @@
 // Shared site behaviour and refinements.
 // Load the shared visual overrides on every page so the header stays consistent.
-if (!document.querySelector('link[data-site-overrides]')) {
+// (Each page already links website-overrides.css in <head>; this is a safety net
+// for any page that doesn't, without duplicating it when it's already present.)
+if (!document.querySelector('link[data-site-overrides], link[href$="website-overrides.css"]')) {
   const overrides = document.createElement('link');
   overrides.rel = 'stylesheet';
   overrides.href = './website-overrides.css';
@@ -43,3 +45,15 @@ if ('IntersectionObserver' in window) {
 document.querySelectorAll('[data-year]').forEach((element) => {
   element.textContent = new Date().getFullYear();
 });
+
+// Contact form: reveal the success note instead of a dead end (static site, no backend).
+const form = document.querySelector('.contact-form');
+const formSuccess = document.querySelector('.form-success');
+
+if (form && formSuccess) {
+  form.addEventListener('submit', (event) => {
+    formSuccess.hidden = false;
+    formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    event.preventDefault();
+  });
+}
