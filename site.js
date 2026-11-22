@@ -93,7 +93,7 @@ document.querySelectorAll('.pip').forEach((pip) => {
 });
 
 // Plate viewer: open any illustration large, step through with the arrow keys.
-const plates = [...document.querySelectorAll('.work-card')];
+const plates = [...document.querySelectorAll('.work-card')].filter((card) => card.querySelector('img'));
 if (plates.length && typeof HTMLDialogElement === 'function') {
   const roman = (n) => [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]
     .reduce((out, [value, numeral]) => { while (n >= value) { out += numeral; n -= value; } return out; }, '');
@@ -126,7 +126,7 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
     current = (index + plates.length) % plates.length;
     const card = plates[current];
     const source = card.querySelector('img');
-    image.src = source.currentSrc || source.src;
+    image.src = source.dataset.full || source.currentSrc || source.src;
     image.alt = source.alt;
     number.textContent = `Plate ${roman(current + 1)} of ${roman(plates.length)}`;
     title.textContent = card.querySelector('.work-label strong')?.textContent || '';
@@ -166,7 +166,7 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
 // fades in from blank paper. Works in every modern browser.
 // ---------------------------------------------------------------------------
 function turnPage(href) {
-  const chapters = ['index.html', 'about.html', 'childrens-books.html', 'contact.html'];
+  const chapters = ['index.html', 'about.html', 'otters.html', 'pip.html', 'russel.html', 'contact.html'];
   const chapterOf = (url) => chapters.indexOf(url.pathname.split('/').pop() || 'index.html');
   const target = new URL(href, window.location.href);
   const from = chapterOf(new URL(window.location.href));
