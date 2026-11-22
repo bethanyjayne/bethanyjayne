@@ -715,3 +715,10 @@ p, li, dd { text-wrap: pretty; }
   .work-label span, .work-label::before { font-size: .95rem; }
   .page-hero > p:not(.eyebrow) { font-size: 1.2rem; line-height: 1.45; }
 }
+
+/* ---------- fixes from the accessibility audit ---------- */
+html:not(.js) .reveal { opacity: 1; transform: none; }
+.character .character-stage figcaption { color: var(--ink-soft); }
+.page-turns { position: static; }
+.missing-page .page-hero::after { content: 'A page is missing'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.6rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
+.missing-links { display: flex; flex-wrap: wrap; gap: .8rem 1.4rem; align-items: center; margin-top: 1.6rem; }
