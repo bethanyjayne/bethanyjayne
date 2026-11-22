@@ -631,3 +631,22 @@ main > section + .plates-section { border-top: 0; padding-top: 0; }
   .env-sketch .env-label { color: #f6e7c1; }
   .cover-tabs { display: none; }
 }
+
+/* ============================================================
+   Front cover: Bethany's lighthouse painting
+   ============================================================ */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.env-sea { --env-bg: linear-gradient(rgba(6, 22, 52, .25), rgba(6, 22, 52, .45)), url('./assets/backdrops/sea.jpg') center / cover; --cover: #123b6b; --cover-deep: #0c2a4f; }
+html:has(body.env-sea) { background: #123b6b; }
+.cover-book { width: min(520px, 78vw, calc((100vh - 9rem) * 1240 / 1754)); }
+.cover--art { aspect-ratio: 1240 / 1754; overflow: hidden; background: #123b6b; }
+.cover-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+/* the spine: a soft crease and shading down the left edge, plus a gentle sheen */
+.cover--art::before { content: ''; position: absolute; z-index: 2; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, rgba(0, 0, 0, .42) 0, rgba(255, 255, 255, .16) 2.6%, rgba(0, 0, 0, .2) 4.6%, transparent 9%), linear-gradient(115deg, rgba(255, 255, 255, .1) 0%, transparent 35%, transparent 70%, rgba(0, 0, 0, .12) 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08), inset -2px 0 4px rgba(0, 0, 0, .18); }
+.cover--art .cover-open { position: absolute; z-index: 3; left: 50%; bottom: 5.5%; transform: translateX(-50%); margin: 0; padding: .45em 1.3em .55em; border: 1px solid rgba(246, 231, 193, .85); color: #f6e7c1; background: rgba(8, 30, 60, .55); backdrop-filter: blur(2px); white-space: nowrap; }
+.cover--art:hover .cover-open, .cover--art:focus-visible .cover-open { background: rgba(8, 30, 60, .78); }
+.turn-stage.is-cover .turn-face--back { background: radial-gradient(rgba(255, 255, 255, .45) 1.2px, transparent 1.8px) 0 0 / 22px 22px, #d7e6f2; }
+@media (max-width: 760px) {
+  .cover-book { width: min(400px, 84vw, calc((100svh - 12rem) * 1240 / 1754)); }
+  .cover--art .cover-open { font-size: .9rem; }
+}
