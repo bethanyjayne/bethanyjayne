@@ -1,20 +1,27 @@
-# Bethany Jayne site library
+# Bethany Jayne: character portfolio
 
-This folder contains the downloaded Wix page snapshots and their shared local assets.
+A static site for Bethany Jayne, children's book illustrator, presented as a picture book: the home page is the front cover, and each chapter is its own environment.
 
-## Layout
+## Pages
 
-- `index.html` is the home page snapshot and GitHub Pages entrypoint.
-- `about.html` is the about page snapshot.
-- `childrens-books.html` is the children's books page snapshot.
-- `contact.html` is the contact page snapshot.
-- `assets/` contains the JavaScript bundles and downloaded image media used by every page.
+- `index.html`: the front cover (lighthouse painting) with chapter tabs
+- `about.html`: Chapter One, About (The Meadow)
+- `otters.html`: Chapter Two, The Otters (The River)
+- `pip.html`: Chapter Three, Pip (The Forest)
+- `russel.html`: Chapter Four, Russel's Adventure (still being drawn)
+- `contact.html`: Chapter Five, Contact (The Last Page)
+- `childrens-books.html`: forwards old links to The Otters
+- `404.html`: shown for any missing page
 
-The pages use a small shared CSS and JavaScript layer and reference `./assets/` for the original artwork. The site works as a static GitHub Pages site with no build step.
+## Files
+
+- `styles.css`: all styling; `site.js`: page turning, plate viewer, menus and the contact form; `page-turn.js`: runs first on each page
+- `assets/art/`: illustrations as 640w and 1280w WebP, plus the cover and the social preview image
+- `assets/characters/`: cut-out characters; `assets/backdrops/`: environment backgrounds made from the paintings
+
+The site needs no build step and is deployed to GitHub Pages by `.github/workflows/static.yml`.
 
 ## Local preview
-
-Serve this folder from a local HTTP server so browser module loading and asset paths behave consistently. For example:
 
 ```sh
 python3 -m http.server 8000

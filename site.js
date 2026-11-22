@@ -46,17 +46,32 @@ document.querySelectorAll('[data-year]').forEach((element) => {
   element.textContent = new Date().getFullYear();
 });
 
-// Contact form: reveal the success note instead of a dead end (static site, no backend).
+// Contact form: there is no server behind this static site, so the form opens the
+// visitor's email app with their message already written, ready to send.
 const form = document.querySelector('.contact-form');
 const formSuccess = document.querySelector('.form-success');
 
 if (form && formSuccess) {
   form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const name = String(data.get('name') || '').trim();
+    const email = String(data.get('email') || '').trim();
+    const message = String(data.get('message') || '').trim();
+    const subject = `A story waiting to be drawn, from ${name}`;
+    const body = `${message}\n\n${name}\n${email}`;
+    window.location.href = `mailto:hello@bethanyjayne.co.uk?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     formSuccess.hidden = false;
     formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    event.preventDefault();
   });
 }
+
+// Swipeable plate rows can be scrolled with the keyboard too.
+document.querySelectorAll('.work-grid').forEach((grid) => {
+  grid.tabIndex = 0;
+  grid.setAttribute('role', 'region');
+  grid.setAttribute('aria-label', 'Plates');
+});
 // Book page numbers: each section is a two-page spread (left = even, right = odd).
 document.querySelectorAll('main > section').forEach((section, index) => {
   [['left', index * 2 + 2], ['right', index * 2 + 3]].forEach(([side, number]) => {

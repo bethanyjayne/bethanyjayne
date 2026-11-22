@@ -1,3 +1,4 @@
+document.documentElement.classList.add('js');
 // Runs in <head>, before the first paint: if we arrived here by turning a
 // page, start the new chapter on blank paper and let it fade in (see site.js).
 (() => {
