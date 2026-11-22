@@ -209,6 +209,19 @@ function turnPage(href) {
   front.className = 'turn-face turn-face--front';
   const copy = pages.cloneNode(true);
   copy.classList.add('turn-clone');
+  // Only copy what is on screen: everything else becomes an empty spacer of the
+  // same height, so long chapters turn as smoothly as short ones.
+  const offscreen = (el) => { const r = el.getBoundingClientRect(); return r.bottom < -60 || r.top > window.innerHeight + 60; };
+  const spacer = (el) => { const blank = document.createElement('div'); blank.style.height = `${el.getBoundingClientRect().height}px`; return blank; };
+  [['main', true], ['.site-footer', false]].forEach(([selector, byChild]) => {
+    const original = pages.querySelector(selector);
+    const copied = copy.querySelector(selector);
+    if (!original || !copied) return;
+    if (!byChild) { if (offscreen(original)) copied.replaceWith(spacer(original)); return; }
+    [...original.children].forEach((child, index) => {
+      if (offscreen(child) && copied.children[index]) copied.children[index].replaceWith(spacer(child));
+    });
+  });
   copy.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
   copy.querySelectorAll('.page-turn, dialog').forEach((el) => el.remove());
   Object.assign(copy.style, { left: `${rect.left - leafLeft}px`, top: `${rect.top - top}px`, width: `${rect.width}px` });
@@ -239,7 +252,7 @@ function turnPage(href) {
     go();
   };
   leaf.addEventListener('transitionend', (event) => { if (event.propertyName === 'transform') finish(); });
-  window.setTimeout(finish, 1100);
+  window.setTimeout(finish, 900);
 
   requestAnimationFrame(() => requestAnimationFrame(() => {
     stage.classList.add('is-turning');
