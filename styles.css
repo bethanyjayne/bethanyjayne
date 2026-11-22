@@ -105,9 +105,6 @@ main > section + section { border-top: 1px solid var(--rule); }
 .page-hero > .eyebrow { grid-row: 2; }
 .page-hero > h1 { grid-row: 3; margin-bottom: 1.6rem; }
 .page-hero > p:not(.eyebrow) { grid-row: 4; max-width: 28rem; color: var(--ink-soft); font-size: 1.3rem; font-style: italic; }
-.about-page .page-hero::after { background-image: url('./assets/4e4cc5_213fba6c803d4567a33344f58f2202f5~mv2.jpeg'); }
-.storybooks-page .page-hero::after { background-image: url('./assets/4e4cc5_de72fcd368334ab3a8ebd5892db5da2c~mv2.jpeg'); }
-.contact-page .page-hero::after { background-image: url('./assets/4e4cc5_fa4c8363135847688a1e13e47ec61619~mv2.jpeg'); }
 
 /* Section openings */
 .section-intro { align-items: end; margin-bottom: 4rem; }
@@ -251,10 +248,10 @@ main > section + section { border-top: 1px solid var(--rule); }
 .turn-stage { position: fixed; z-index: 1000; inset: 0; pointer-events: none; perspective: 2400px; }
 .turn-under, .turn-leaf { position: absolute; }
 .turn-under { overflow: hidden; background: var(--paper); }
-.turn-under::after { content: ''; position: absolute; inset: 0; background: linear-gradient(var(--shade-dir, 90deg), rgba(31, 35, 64, .28), transparent 60%); transition: opacity .8s ease; }
-.turn-leaf { transform-style: preserve-3d; transition: transform .8s cubic-bezier(.55, .06, .35, 1); will-change: transform; }
+.turn-under::after { content: ''; position: absolute; inset: 0; background: linear-gradient(var(--shade-dir, 90deg), rgba(31, 35, 64, .28), transparent 60%); transition: opacity .68s ease; }
+.turn-leaf { transform-style: preserve-3d; transition: transform .68s cubic-bezier(.45, .05, .35, 1); will-change: transform; }
 .turn-face { position: absolute; inset: 0; overflow: hidden; background: var(--paper); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.turn-face::after { content: ''; position: absolute; inset: 0; background: linear-gradient(var(--shade-dir, 90deg), rgba(31, 35, 64, .3), transparent 70%); opacity: 0; transition: opacity .8s ease; }
+.turn-face::after { content: ''; position: absolute; inset: 0; background: linear-gradient(var(--shade-dir, 90deg), rgba(31, 35, 64, .3), transparent 70%); opacity: 0; transition: opacity .68s ease; }
 .turn-face--back { transform: rotateY(180deg); background: linear-gradient(var(--shade-dir, 90deg), #efe5d3, var(--paper) 30%); }
 .turn-face--back::after { opacity: .9; }
 .turn-stage.is-turning .turn-face--front::after { opacity: 1; }
@@ -262,7 +259,7 @@ main > section + section { border-top: 1px solid var(--rule); }
 .turn-clone { position: absolute; margin: 0; }
 .turn-clone, .turn-clone * { animation: none !important; transition: none !important; }
 .turn-clone .site-header { visibility: hidden; }
-html.is-arriving .book-pages > * { animation: page-arrive .6s ease .05s both; }
+html.is-arriving .book-pages > * { animation: page-arrive .4s ease both; }
 @keyframes page-arrive { from { opacity: 0; } to { opacity: 1; } }
 
 /* ---------- phone tab bar (hidden on larger screens) ---------- */
@@ -499,22 +496,138 @@ html:has(body.env-rainforest) { background: #145236; }
 html:has(body.env-den) { background: #3e230b; }
 
 /* Chapter openers drawn from each environment */
-.env-rainforest .page-hero::after {
-  background:
-    url('./assets/characters/pip.webp') 72% 22% / 24% auto no-repeat,
-    url('./assets/characters/bear-ball.webp') 24% 50% / 34% auto no-repeat,
-    url('./assets/characters/bears-floating.webp') 76% 86% / 38% auto no-repeat,
-    radial-gradient(#ffe58a 1.4px, transparent 2px) 0 0 / 38px 38px,
-    radial-gradient(circle at 70% 18%, #7fd19a, transparent 55%),
-    linear-gradient(160deg, #3fa66b, #1d6b47);
-}
-.env-den .page-hero::after {
-  background:
-    url('./assets/characters/bear-peek.webp') 50% 62% / 48% auto no-repeat,
-    radial-gradient(circle at 50% 42%, rgba(255, 205, 140, .55), transparent 55%),
-    linear-gradient(160deg, #8a5426, #4a2a10);
-}
 @media (max-width: 760px) {
   .cover-book::before { display: none; }
   .cover { box-shadow: 3px 3px 0 #f6efe0, 4px 4px 0 #ddd1bb, 6px 6px 0 #f6efe0, 7px 7px 0 #d3c6ad, 0 24px 40px -8px rgba(5, 12, 40, .6); }
+}
+
+/* ============================================================
+   Phone refinements
+   ============================================================ */
+h2 + p:not(.eyebrow) { margin-top: 1rem; }
+@media (max-width: 760px) {
+  /* The environment name sits in the running head instead of its own strip */
+  .env-label { position: absolute; z-index: 40; top: .95rem; right: 1rem; margin: 0; padding: .3rem .75rem .35rem; border-radius: 999px; font-size: .9rem; letter-spacing: .16em; }
+  .env-label span::before, .env-label span::after { display: none; }
+  .site-header { padding-right: 9rem; }
+  .cover-page .env-label { position: static; display: inline-block; margin: .9rem auto 0; }
+  .cover-page { text-align: center; }
+  .cover-page .cover-wrap { text-align: left; padding-top: 1rem; }
+
+  /* Openers: shorter illustration so the chapter title is on the first screen */
+  .hero-art, .page-hero::after { aspect-ratio: 4 / 3; }
+  .page-hero > .eyebrow { margin-top: 1.6rem; }
+  .page-hero > h1 { margin-bottom: 1rem; }
+  .page-hero > p:not(.eyebrow) { margin-bottom: 2.4rem; font-size: 1.15rem; }
+
+  /* Less empty scrolling */
+  .section { padding: 3rem 1.25rem 3.4rem; }
+  .page-num { display: none; }
+  .section-intro { margin-bottom: 1.8rem; }
+  .character-plates { margin-top: 2.2rem; }
+  .character-stage { aspect-ratio: 4 / 3; }
+  .character-figure { width: auto; height: 80%; }
+  .character-figure--cat { height: 82%; }
+  .character-sheet h2 { font-size: 2.6rem; }
+
+  /* Footer: the tab bar already lists the chapters */
+  .footer-contents { display: none; }
+  .site-footer { padding: 2.6rem 1.25rem 1.6rem; }
+  .end-bears { width: 92px; }
+  .the-end { font-size: 1.7rem; margin-bottom: .8rem; }
+
+  /* Previous / next: a small label above the chapter name */
+  .page-turn span small { display: block; margin-bottom: .1rem; color: var(--muted); font-size: .95rem; font-variant-caps: all-small-caps; letter-spacing: .1em; }
+
+  /* Keep the bear clear of the contact form button */
+  .peek-bear--left { display: none; }
+  .contact-band .section-inner { padding-right: 6.5rem; }
+}
+/* ============================================================
+   Environments painted from Bethany's own artwork
+   ============================================================ */
+body::before { display: none; }
+.env-river { --env-bg: linear-gradient(rgba(10, 24, 82, .28), rgba(10, 24, 82, .42)), url('./assets/backdrops/river.jpg') center / cover; --cover: #11245e; --cover-deep: #0b1a48; --paper: #fbf8f1; --mat: #f1ece1; --accent: #87501a; --primary: #1c41a2; --primary-deep: #14308a; }
+.env-meadow { --env-bg: linear-gradient(rgba(255, 255, 255, .05), rgba(20, 50, 20, .18)), url('./assets/backdrops/meadow.jpg') center / cover; }
+.env-forest { --env-bg: linear-gradient(rgba(20, 70, 40, .12), rgba(20, 70, 40, .3)), url('./assets/backdrops/forest.jpg') center / cover; --cover: #245b3c; --cover-deep: #183f29; --paper: #f9fbf4; --paper-edge: #e5eedc; --mat: #e9f2e2; --accent: #2b6a43; --primary: #2c7a4b; --primary-deep: #1f5c38; }
+html:has(body.env-forest) { background: #8fcaa0; }
+html:has(body.env-meadow) { background: #4f9a3a; }
+.env-label { text-shadow: 0 1px 3px rgba(0, 0, 0, .45); }
+.tab-river { background: #1c41a2; }
+.tab-forest { background: #2c7a4b; }
+
+/* Chapter openers use the real paintings, not cut-outs on gradients */
+
+/* ============================================================
+   Drawings that lift off the page, with room to breathe
+   ============================================================ */
+.work-grid { row-gap: 4.5rem; }
+.plate-frame { display: grid; place-items: center; aspect-ratio: 4 / 5; padding: 7% 6%; }
+.work-card .plate-frame img { width: auto; height: auto; max-width: 100%; max-height: 100%; min-height: 0; aspect-ratio: auto; padding: 0; border: .45rem solid #fff; background: #fff; object-fit: contain; box-shadow: 0 1px 2px rgba(31, 35, 64, .12), 0 10px 18px -10px rgba(31, 35, 64, .35), 0 30px 50px -28px rgba(31, 35, 64, .5); transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s ease; }
+.work-card .plate-frame img:hover, .work-card .plate-frame img:focus-visible { transform: translateY(-8px) rotate(-.6deg); box-shadow: 0 2px 4px rgba(31, 35, 64, .14), 0 18px 28px -12px rgba(31, 35, 64, .4), 0 46px 70px -30px rgba(31, 35, 64, .55); }
+.work-label { padding-top: .2rem; text-align: center; }
+
+.character { padding-top: 7.5rem; padding-bottom: 8rem; }
+.character-stage { padding: 0; overflow: visible; background: none !important; }
+.character-art { display: block; width: 86%; height: auto; border: .6rem solid #fff; box-shadow: 0 2px 4px rgba(31, 35, 64, .14), 0 22px 40px -18px rgba(31, 35, 64, .5), 0 60px 90px -50px rgba(31, 35, 64, .55); }
+.character-stage figcaption { position: static; margin-top: 1.4rem; color: var(--muted); text-align: center; }
+.character-stage { aspect-ratio: auto; }
+[data-habitat='studio'] .character-figure--cat { width: 70%; padding: 5%; border: .6rem solid #fff; box-shadow: 0 2px 4px rgba(31, 35, 64, .14), 0 22px 40px -18px rgba(31, 35, 64, .5); }
+.portrait img { box-shadow: 0 22px 40px -20px rgba(31, 35, 64, .45); }
+
+@media (max-width: 760px) {
+  .work-grid { row-gap: 1rem; }
+  .plate-frame { padding: 6% 5%; }
+  .work-card .plate-frame img { border-width: .3rem; }
+  .character { padding-top: 3.4rem; padding-bottom: 3.8rem; }
+  .character-art { width: 92%; }
+  .character-stage figcaption { margin-top: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-card .plate-frame img { transition: none; }
+}
+
+/* ============================================================
+   Chapters: About, The Otters, Pip, Russel's Adventure, Contact
+   High-quality artwork for every opener.
+   ============================================================ */
+.about-page .page-hero::after { background: url('./assets/art/otter-waving-1280.webp') center / cover no-repeat; }
+.otters-page .page-hero::after { background: url('./assets/art/otters-stone-1280.webp') center / cover no-repeat; }
+.pip-page .page-hero::after { background: url('./assets/art/pip-scene.webp') center / cover no-repeat; }
+.contact-page .page-hero::after { background: url('./assets/art/otters-scene.webp') center / cover no-repeat; }
+.russel-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
+
+/* Russel's chapter: warm sketchbook paper until the artwork arrives */
+.env-sketch { --env-bg: repeating-linear-gradient(0deg, transparent 0 39px, rgba(90, 70, 40, .07) 39px 40px), linear-gradient(180deg, #e9e1d1, #d5c8b1); --cover: #5f4b37; --cover-deep: #463626; --paper: #fcf8f0; --mat: #f2eadc; --accent: #7a5332; --primary: #6b4a2a; --primary-deep: #523820; }
+.env-sketch .env-label { color: #5f4b37; text-shadow: none; }
+/* Contact: the last page, under the river at dusk */
+.env-dusk { --env-bg: linear-gradient(rgba(8, 16, 50, .5), rgba(8, 16, 50, .68)), url('./assets/backdrops/river.jpg') center / cover; --cover: #0e1d4c; --cover-deep: #08133a; --paper: #fbf8f1; --mat: #f1ece1; --accent: #87501a; --primary: #1c41a2; --primary-deep: #14308a; }
+html:has(body.env-sketch) { background: #d5c8b1; }
+html:has(body.env-dusk) { background: #0e1d4c; }
+.tab-sketch { background: #6b4a2a; }
+.tab-dusk { background: #0e1d4c; }
+
+/* Placeholder plates for artwork still to come */
+.plate-pending { display: block; width: 76%; aspect-ratio: 3 / 4; border: 2px dashed rgba(70, 52, 32, .25); background: repeating-linear-gradient(-45deg, transparent 0 11px, rgba(70, 52, 32, .05) 11px 12px); }
+.work-card--pending .work-label strong { color: var(--muted); }
+
+/* Plates follow straight on from each character profile */
+main > section + .plates-section { border-top: 0; padding-top: 0; }
+
+/* Six chapters in the navigation */
+.nav { gap: 1.35rem; font-size: 1.08rem; }
+.cover-tabs { gap: .4rem; top: 8%; }
+.cover-tabs a { padding: .75rem .45rem .75rem 1.2rem; font-size: 1rem; }
+@media (max-width: 760px) {
+  .tab-bar { grid-template-columns: repeat(6, 1fr); }
+  .tab-bar a { font-size: .82rem; padding: .4rem 0; }
+  .cover-tabs { flex-wrap: wrap; }
+  .cover-tabs a { padding: .55rem .75rem; }
+  .russel-page .page-hero::after { font-size: 1.3rem; }
+}
+.nav a { white-space: nowrap; }
+.nav { gap: 1.2rem; font-size: 1.04rem; }
+@media (max-width: 760px) {
+  .env-sketch .env-label { color: #f6e7c1; }
+  .cover-tabs { display: none; }
 }

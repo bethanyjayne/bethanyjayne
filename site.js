@@ -93,7 +93,7 @@ document.querySelectorAll('.pip').forEach((pip) => {
 });
 
 // Plate viewer: open any illustration large, step through with the arrow keys.
-const plates = [...document.querySelectorAll('.work-card')];
+const plates = [...document.querySelectorAll('.work-card')].filter((card) => card.querySelector('img'));
 if (plates.length && typeof HTMLDialogElement === 'function') {
   const roman = (n) => [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]
     .reduce((out, [value, numeral]) => { while (n >= value) { out += numeral; n -= value; } return out; }, '');
@@ -126,7 +126,7 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
     current = (index + plates.length) % plates.length;
     const card = plates[current];
     const source = card.querySelector('img');
-    image.src = source.currentSrc || source.src;
+    image.src = source.dataset.full || source.currentSrc || source.src;
     image.alt = source.alt;
     number.textContent = `Plate ${roman(current + 1)} of ${roman(plates.length)}`;
     title.textContent = card.querySelector('.work-label strong')?.textContent || '';
@@ -166,7 +166,7 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
 // fades in from blank paper. Works in every modern browser.
 // ---------------------------------------------------------------------------
 function turnPage(href) {
-  const chapters = ['index.html', 'about.html', 'childrens-books.html', 'contact.html'];
+  const chapters = ['index.html', 'about.html', 'otters.html', 'pip.html', 'russel.html', 'contact.html'];
   const chapterOf = (url) => chapters.indexOf(url.pathname.split('/').pop() || 'index.html');
   const target = new URL(href, window.location.href);
   const from = chapterOf(new URL(window.location.href));
@@ -209,6 +209,19 @@ function turnPage(href) {
   front.className = 'turn-face turn-face--front';
   const copy = pages.cloneNode(true);
   copy.classList.add('turn-clone');
+  // Only copy what is on screen: everything else becomes an empty spacer of the
+  // same height, so long chapters turn as smoothly as short ones.
+  const offscreen = (el) => { const r = el.getBoundingClientRect(); return r.bottom < -60 || r.top > window.innerHeight + 60; };
+  const spacer = (el) => { const blank = document.createElement('div'); blank.style.height = `${el.getBoundingClientRect().height}px`; return blank; };
+  [['main', true], ['.site-footer', false]].forEach(([selector, byChild]) => {
+    const original = pages.querySelector(selector);
+    const copied = copy.querySelector(selector);
+    if (!original || !copied) return;
+    if (!byChild) { if (offscreen(original)) copied.replaceWith(spacer(original)); return; }
+    [...original.children].forEach((child, index) => {
+      if (offscreen(child) && copied.children[index]) copied.children[index].replaceWith(spacer(child));
+    });
+  });
   copy.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
   copy.querySelectorAll('.page-turn, dialog').forEach((el) => el.remove());
   Object.assign(copy.style, { left: `${rect.left - leafLeft}px`, top: `${rect.top - top}px`, width: `${rect.width}px` });
@@ -239,7 +252,7 @@ function turnPage(href) {
     go();
   };
   leaf.addEventListener('transitionend', (event) => { if (event.propertyName === 'transform') finish(); });
-  window.setTimeout(finish, 1100);
+  window.setTimeout(finish, 900);
 
   requestAnimationFrame(() => requestAnimationFrame(() => {
     stage.classList.add('is-turning');
