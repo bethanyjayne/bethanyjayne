@@ -382,3 +382,139 @@ html.is-arriving .book-pages > * { animation: page-arrive .6s ease .05s both; }
   .plate-viewer { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; }
   .plate-viewer__img { height: 62dvh; }
 }
+
+/* ============================================================
+   Environments: every chapter is its own ecosystem, taken from
+   the worlds in Bethany's drawings.
+   ============================================================ */
+:root { --primary: var(--sky); --primary-deep: var(--sky-deep); --env-bg: linear-gradient(180deg, var(--sky), var(--sky-deep)); }
+.env-river { --env-bg: radial-gradient(1200px 700px at 50% -10%, #2a55c4 0%, transparent 70%), linear-gradient(180deg, #1c41a2 0%, #14308a 100%); }
+.env-meadow { --env-bg: linear-gradient(180deg, #5f93d3 0%, #9cc4ec 38%, #cfe4f4 54%, #7fbd5c 55%, #4f9a3a 75%, #2f7a2a 100%); --cover: #2c5a26; --cover-deep: #1d4219; --paper: #fbfaf1; --paper-edge: #ebebd6; --mat: #eef1df; --accent: #3f6b1d; --primary: #2f7a2a; --primary-deep: #22601e; }
+.env-rainforest { --env-bg: radial-gradient(#ffe58a 1.3px, transparent 1.9px) 0 0 / 46px 46px, radial-gradient(rgba(255, 243, 176, .7) 1px, transparent 1.6px) 23px 23px / 46px 46px, radial-gradient(900px 600px at 20% 0%, #4fb07a, transparent 70%), linear-gradient(180deg, #2f8a5a 0%, #145236 100%); --cover: #123f2b; --cover-deep: #0b2d1e; --paper: #f9fbf3; --paper-edge: #e5eedc; --mat: #e8f1e1; --accent: #1f6b45; --primary: #1d6b47; --primary-deep: #145236; }
+.env-den { --env-bg: radial-gradient(900px 600px at 50% 0%, #b5763a, transparent 70%), linear-gradient(180deg, #6b3f17 0%, #3e230b 100%); --cover: #3f2410; --cover-deep: #2b180a; --paper: #fdf6ea; --paper-edge: #f1e2cb; --mat: #f4e7d3; --accent: #87501a; --primary: #87501a; --primary-deep: #6a3d12; }
+body { background: var(--env-bg); background-attachment: fixed; }
+.button-primary { border-color: var(--primary); background: var(--primary); }
+.button-primary:hover { border-color: var(--primary-deep); background: var(--primary-deep); }
+.contents-go, .contents-list a:hover .contents-name { color: var(--primary); }
+
+/* Quiet ambient life in each environment */
+body::before { content: ''; position: fixed; z-index: 0; inset: 0; pointer-events: none; }
+.book, .env-label, .cover-wrap { position: relative; z-index: 1; }
+.env-river::before { background: repeating-linear-gradient(172deg, rgba(255, 255, 255, .045) 0 2px, transparent 2px 70px); animation: river-flow 40s linear infinite; }
+.env-meadow::before { background: radial-gradient(120px 38px at 12% 14%, rgba(255, 255, 255, .85), transparent 70%), radial-gradient(170px 46px at 62% 9%, rgba(255, 255, 255, .8), transparent 70%), radial-gradient(110px 34px at 88% 22%, rgba(255, 255, 255, .7), transparent 70%); animation: clouds 60s ease-in-out infinite alternate; }
+.env-rainforest::before { background: radial-gradient(#fff6c4 1.4px, transparent 2px) 11px 31px / 92px 92px, radial-gradient(#ffe58a 1.2px, transparent 1.8px) 57px 7px / 120px 120px; animation: twinkle 5s ease-in-out infinite alternate; }
+.env-den::before { background: radial-gradient(700px 420px at 50% 0%, rgba(255, 196, 120, .35), transparent 70%); animation: glow 7s ease-in-out infinite alternate; }
+@keyframes river-flow { to { background-position: 0 700px; } }
+@keyframes clouds { to { transform: translateX(6vw); } }
+@keyframes twinkle { from { opacity: .35; } to { opacity: 1; } }
+@keyframes glow { from { opacity: .55; } to { opacity: 1; } }
+
+.env-label { margin: 1.3rem 0 0; color: rgba(255, 255, 255, .9); font-size: 1.05rem; font-variant-caps: all-small-caps; letter-spacing: .28em; text-align: center; text-shadow: 0 1px 2px rgba(0, 0, 0, .25); }
+.env-label span::before, .env-label span::after { content: ''; display: inline-block; width: 2.4rem; height: 1px; margin: 0 .9rem; background: currentColor; opacity: .6; vertical-align: middle; }
+.book { width: min(1380px, calc(100% - 2 * clamp(0rem, 3.5vw, 3.5rem))); margin-top: 1rem; }
+
+/* ============================================================
+   Character profiles (Characters chapter)
+   ============================================================ */
+.cast-index { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; margin: 1.6rem 0 0; padding: 0; list-style: none; font-size: 1.25rem; }
+.cast-index a { text-decoration: none; border-bottom: 1px solid var(--rule); }
+.cast-index a:hover { color: var(--primary); border-color: currentColor; }
+.cast-index span { margin-right: .45rem; color: var(--accent); font-size: 1rem; font-variant-caps: all-small-caps; letter-spacing: .1em; }
+.character { scroll-margin-top: 5rem; }
+.character-spread { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); align-items: center; }
+.character-stage { position: relative; display: grid; place-items: center; aspect-ratio: 4 / 5; margin: 0; overflow: hidden; }
+[data-habitat='river'] .character-stage { background: radial-gradient(circle at 28% 18%, #3f6fd8, transparent 60%), repeating-linear-gradient(172deg, rgba(255, 255, 255, .06) 0 2px, transparent 2px 46px), linear-gradient(160deg, #1c41a2, #14308a); }
+[data-habitat='rainforest'] .character-stage { background: radial-gradient(#ffe58a 1.4px, transparent 2px) 0 0 / 38px 38px, radial-gradient(circle at 70% 20%, #7fd19a, transparent 60%), linear-gradient(160deg, #3fa66b, #1d6b47); }
+[data-habitat='studio'] .character-stage { background: linear-gradient(rgba(31, 35, 64, .05) 1px, transparent 1px) 0 0 / 100% 28px, var(--mat); }
+.character-figure { width: 58%; height: auto; filter: drop-shadow(0 22px 18px rgba(5, 12, 40, .35)); animation: drift 7s ease-in-out infinite; }
+.character-figure--pip { width: 50%; }
+.character-figure--cat { width: 62%; padding: 4%; background: #fff; filter: none; box-shadow: 0 18px 30px -14px rgba(31, 35, 64, .45); animation: none; }
+.character-stage figcaption { position: absolute; bottom: 1rem; left: 1.2rem; color: rgba(255, 255, 255, .9); font-size: 1rem; font-variant-caps: all-small-caps; letter-spacing: .14em; }
+[data-habitat='studio'] .character-stage figcaption { color: var(--muted); }
+.character-sheet h2 { font-size: clamp(2.6rem, 4.4vw, 4rem); font-style: italic; }
+.character-meta { margin: .6rem 0 1.4rem; color: var(--muted); font-style: italic; }
+.character-sheet > p:not(.eyebrow):not(.character-meta) { max-width: 32rem; color: var(--ink-soft); }
+.character-notes { display: grid; gap: 0; max-width: 32rem; margin: 1.8rem 0 0; border-top: 1px solid var(--rule); }
+.character-notes div { display: grid; grid-template-columns: 8rem 1fr; gap: 1rem; padding: .7rem 0; border-bottom: 1px solid var(--rule); }
+.character-notes dt { color: var(--accent); font-variant-caps: all-small-caps; letter-spacing: .1em; }
+.character-notes dd { margin: 0; }
+.character-plates { margin-top: 4.5rem; }
+.plates-title { margin: 0 0 1.6rem; color: var(--accent); font-size: 1.15rem; font-variant-caps: all-small-caps; letter-spacing: .12em; }
+
+/* ============================================================
+   The front cover (home)
+   ============================================================ */
+.cover-page { min-height: 100vh; }
+.cover-wrap { display: grid; justify-items: center; padding: 2rem 1rem 4rem; }
+.cover-book { position: relative; width: min(500px, 80vw); margin-right: 2.6rem; }
+.cover-book::before { content: ''; position: absolute; z-index: 0; inset: 1.2% -2.4% -2% 4%; border-radius: 0 8px 8px 0; background: repeating-linear-gradient(0deg, #f6efe0 0 2px, #ddd1bb 2px 3px); box-shadow: 0 34px 60px -10px rgba(5, 12, 40, .6); }
+.cover { position: relative; z-index: 2; display: block; aspect-ratio: 3 / 4; border-radius: 4px 10px 10px 4px; color: #f6e7c1; text-decoration: none; background: linear-gradient(90deg, rgba(0, 0, 0, .38) 0, rgba(255, 255, 255, .1) 2.4%, rgba(0, 0, 0, .22) 4.4%, transparent 8%), repeating-linear-gradient(90deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 3px), repeating-linear-gradient(0deg, rgba(0, 0, 0, .03) 0 1px, transparent 1px 3px), var(--cover); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06), 0 2px 3px rgba(0, 0, 0, .25); transform-origin: left center; transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+.cover:hover, .cover:focus-visible { transform: perspective(1800px) rotateY(-10deg); }
+.cover-frame { position: absolute; inset: 6.5% 7% 6% 12%; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto; justify-items: center; padding: 6% 7% 5%; border: 1.5px solid rgba(233, 211, 161, .6); outline: 1px solid rgba(233, 211, 161, .25); outline-offset: 5px; text-align: center; }
+.cover-kicker, .cover-subtitle, .cover-open { color: #e9d3a1; font-size: 1rem; font-variant-caps: all-small-caps; letter-spacing: .22em; }
+.cover-title { margin: .2em 0 .45em; color: #f6e7c1; font-size: clamp(2.3rem, 5.6vw, 3.5rem); font-style: italic; text-shadow: 0 1px 0 rgba(0, 0, 0, .35); }
+.cover-window { position: relative; width: 74%; height: 100%; border: 4px solid #e9d3a1; border-radius: 50% 50% 6px 6px / 34% 34% 6px 6px; box-shadow: 0 0 0 5px rgba(0, 0, 0, .18), inset 0 0 18px rgba(0, 0, 0, .3); }
+.cover-window img:first-child { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.cover-pip { position: absolute; top: -13%; right: -16%; width: 34%; height: auto; transform-origin: 50% 100%; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, .3)); animation: pip-breathe 4.5s ease-in-out infinite; }
+.cover-subtitle { margin-top: 1.1em; }
+.cover-open { margin-top: .9em; padding: .35em 1.2em .45em; border: 1px solid rgba(233, 211, 161, .7); transition: background-color .25s ease; }
+.cover:hover .cover-open { background: rgba(233, 211, 161, .16); }
+.cover-tabs { position: absolute; z-index: 1; top: 12%; right: -4.6rem; display: grid; gap: .55rem; }
+.cover-tabs a { display: block; width: 3.6rem; padding: 1rem .5rem 1rem 1.2rem; border-radius: 0 9px 9px 0; color: #fff; font-size: 1.05rem; text-decoration: none; writing-mode: vertical-rl; box-shadow: 0 6px 12px -4px rgba(0, 0, 0, .35); transition: transform .25s ease; }
+.cover-tabs a:hover, .cover-tabs a:focus-visible { transform: translateX(6px); }
+.cover-tabs b { font-weight: 500; opacity: .8; margin-bottom: .4rem; }
+.tab-meadow { background: #2f7a2a; }
+.tab-rainforest { background: #1d6b47; }
+.tab-den { background: #87501a; }
+.cover-hint { margin: 2.4rem 0 0; color: rgba(255, 255, 255, .82); font-style: italic; text-align: center; }
+
+/* Opening the cover reveals its endpaper */
+.turn-stage.is-cover .turn-face--back { background: radial-gradient(rgba(255, 255, 255, .5) 1.2px, transparent 1.8px) 0 0 / 22px 22px, #dbe4f4; }
+
+@media (max-width: 760px) {
+  .env-label { margin: 0; padding: .5rem 1rem; color: #f6e7c1; background: var(--cover); text-shadow: none; }
+  .env-label span::before, .env-label span::after { width: 1.2rem; margin: 0 .6rem; }
+  .book { width: 100%; margin-top: 0; }
+  .character-spread { grid-template-columns: 1fr; row-gap: 2rem; }
+  .character-plates { margin-top: 3rem; }
+  .character-notes div { grid-template-columns: 6.5rem 1fr; }
+  .cover-wrap { padding: 1.6rem 1rem 2rem; }
+  .cover-book { width: min(400px, 84vw); margin-right: 0; }
+  .cover-book::before { inset: 1.2% -2.6% -1.6% 4%; }
+  .cover-tabs { position: static; display: flex; justify-content: center; gap: .4rem; margin-top: 1.4rem; }
+  .cover-tabs a { width: auto; padding: .6rem .9rem; border-radius: 8px; writing-mode: horizontal-tb; font-size: 1rem; }
+  .cover-tabs b { margin: 0 .3rem 0 0; }
+  .cover-hint { margin-top: 1.2rem; font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none !important; }
+  .character-figure, .cover-pip { animation: none !important; }
+  .cover { transition: none; }
+}
+
+/* Solid base colour under each environment, so long pages never show white */
+html:has(body.env-river) { background: #14308a; }
+html:has(body.env-meadow) { background: #2f7a2a; }
+html:has(body.env-rainforest) { background: #145236; }
+html:has(body.env-den) { background: #3e230b; }
+
+/* Chapter openers drawn from each environment */
+.env-rainforest .page-hero::after {
+  background:
+    url('./assets/characters/pip.webp') 72% 22% / 24% auto no-repeat,
+    url('./assets/characters/bear-ball.webp') 24% 50% / 34% auto no-repeat,
+    url('./assets/characters/bears-floating.webp') 76% 86% / 38% auto no-repeat,
+    radial-gradient(#ffe58a 1.4px, transparent 2px) 0 0 / 38px 38px,
+    radial-gradient(circle at 70% 18%, #7fd19a, transparent 55%),
+    linear-gradient(160deg, #3fa66b, #1d6b47);
+}
+.env-den .page-hero::after {
+  background:
+    url('./assets/characters/bear-peek.webp') 50% 62% / 48% auto no-repeat,
+    radial-gradient(circle at 50% 42%, rgba(255, 205, 140, .55), transparent 55%),
+    linear-gradient(160deg, #8a5426, #4a2a10);
+}
+@media (max-width: 760px) {
+  .cover-book::before { display: none; }
+  .cover { box-shadow: 3px 3px 0 #f6efe0, 4px 4px 0 #ddd1bb, 6px 6px 0 #f6efe0, 7px 7px 0 #d3c6ad, 0 24px 40px -8px rgba(5, 12, 40, .6); }
+}

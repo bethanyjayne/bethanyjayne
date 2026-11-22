@@ -74,7 +74,7 @@ document.addEventListener('keydown', (event) => {
   if (document.querySelector('dialog[open]')) return;
   if (event.target.closest('input, textarea, select, button, [contenteditable]')) return;
   const rel = { ArrowRight: 'next', ArrowLeft: 'prev' }[event.key];
-  const link = rel && document.querySelector(`a.page-turn[rel="${rel}"]`);
+  const link = rel && document.querySelector(`a[rel="${rel}"]`);
   if (link) turnPage(link.href);
 });
 
@@ -171,7 +171,8 @@ function turnPage(href) {
   const target = new URL(href, window.location.href);
   const from = chapterOf(new URL(window.location.href));
   const to = chapterOf(target);
-  const pages = document.querySelector('.book-pages');
+  const cover = document.querySelector('.cover');
+  const pages = document.querySelector('.book-pages') || cover;
   const go = () => { window.location.href = target.href; };
 
   if (turnPage.busy) return;
@@ -179,7 +180,7 @@ function turnPage(href) {
   turnPage.busy = true;
 
   const backward = to < from;
-  const single = window.matchMedia('(max-width: 760px)').matches;
+  const single = Boolean(cover) || window.matchMedia('(max-width: 760px)').matches;
   const rect = pages.getBoundingClientRect();
   const top = Math.max(rect.top, 0);
   const height = Math.min(rect.bottom, window.innerHeight) - top;
@@ -190,6 +191,7 @@ function turnPage(href) {
   const stage = document.createElement('div');
   stage.className = 'turn-stage';
   stage.setAttribute('aria-hidden', 'true');
+  if (cover) stage.classList.add('is-cover');
   stage.style.setProperty('--shade-dir', backward ? '270deg' : '90deg');
   stage.style.perspectiveOrigin = `${backward ? leafLeft + half : leafLeft}px 50%`;
 
@@ -280,14 +282,14 @@ document.addEventListener('click', (event) => {
     const quick = Date.now() - start.time < 600;
     start = null;
     if (!quick || Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8) return;
-    const link = document.querySelector(`a.page-turn[rel="${dx < 0 ? 'next' : 'prev'}"]`);
+    const link = document.querySelector(`a[rel="${dx < 0 ? 'next' : 'prev'}"]`);
     if (link) turnPage(link.href);
   }, { passive: true });
 })();
 
 // Fetch the neighbouring chapters early so the next page is ready when it turns.
 window.addEventListener('load', () => {
-  document.querySelectorAll('a.page-turn[rel]').forEach((link) => {
+  document.querySelectorAll('a[rel="next"], a[rel="prev"], .cover-tabs a').forEach((link) => {
     const hint = document.createElement('link');
     hint.rel = 'prefetch';
     hint.href = link.href;
