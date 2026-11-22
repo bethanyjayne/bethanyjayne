@@ -75,7 +75,7 @@ document.addEventListener('keydown', (event) => {
   if (event.target.closest('input, textarea, select, button, [contenteditable]')) return;
   const rel = { ArrowRight: 'next', ArrowLeft: 'prev' }[event.key];
   const link = rel && document.querySelector(`a.page-turn[rel="${rel}"]`);
-  if (link) window.location.href = link.href;
+  if (link) turnPage(link.href);
 });
 
 // Pip hops when you say hello.
@@ -157,3 +157,140 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
   });
   viewer.addEventListener('close', () => plates[current].querySelector('img').focus({ preventScroll: true }));
 }
+
+
+// ---------------------------------------------------------------------------
+// Page turning between chapters. The visible page is copied onto a "leaf"
+// that turns over the spine (right page forwards, left page backwards; on a
+// phone the whole page turns from its edge), then the next chapter loads and
+// fades in from blank paper. Works in every modern browser.
+// ---------------------------------------------------------------------------
+function turnPage(href) {
+  const chapters = ['index.html', 'about.html', 'childrens-books.html', 'contact.html'];
+  const chapterOf = (url) => chapters.indexOf(url.pathname.split('/').pop() || 'index.html');
+  const target = new URL(href, window.location.href);
+  const from = chapterOf(new URL(window.location.href));
+  const to = chapterOf(target);
+  const pages = document.querySelector('.book-pages');
+  const go = () => { window.location.href = target.href; };
+
+  if (turnPage.busy) return;
+  if (!pages || from < 0 || to < 0 || from === to || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { go(); return; }
+  turnPage.busy = true;
+
+  const backward = to < from;
+  const single = window.matchMedia('(max-width: 760px)').matches;
+  const rect = pages.getBoundingClientRect();
+  const top = Math.max(rect.top, 0);
+  const height = Math.min(rect.bottom, window.innerHeight) - top;
+  const half = single ? rect.width : rect.width / 2;
+  const leafLeft = single || backward ? rect.left : rect.left + half;
+  const hinge = backward ? 'right' : 'left';
+
+  const stage = document.createElement('div');
+  stage.className = 'turn-stage';
+  stage.setAttribute('aria-hidden', 'true');
+  stage.style.setProperty('--shade-dir', backward ? '270deg' : '90deg');
+  stage.style.perspectiveOrigin = `${backward ? leafLeft + half : leafLeft}px 50%`;
+
+  const box = (el) => Object.assign(el.style, { left: `${leafLeft}px`, top: `${top}px`, width: `${half}px`, height: `${height}px` });
+  const under = document.createElement('div');
+  under.className = 'turn-under';
+  box(under);
+
+  const leaf = document.createElement('div');
+  leaf.className = 'turn-leaf';
+  box(leaf);
+  leaf.style.transformOrigin = `${hinge} center`;
+
+  const front = document.createElement('div');
+  front.className = 'turn-face turn-face--front';
+  const copy = pages.cloneNode(true);
+  copy.classList.add('turn-clone');
+  copy.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+  copy.querySelectorAll('.page-turn, dialog').forEach((el) => el.remove());
+  Object.assign(copy.style, { left: `${rect.left - leafLeft}px`, top: `${rect.top - top}px`, width: `${rect.width}px` });
+  front.appendChild(copy);
+
+  // The running head is pinned to the top of the screen, so copy it where it is now.
+  const header = pages.querySelector('.site-header');
+  if (header) {
+    const headerRect = header.getBoundingClientRect();
+    const headerCopy = header.cloneNode(true);
+    headerCopy.classList.add('turn-clone');
+    headerCopy.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+    Object.assign(headerCopy.style, { position: 'absolute', left: `${rect.left - leafLeft}px`, top: `${headerRect.top - top}px`, width: `${rect.width}px`, visibility: 'visible' });
+    front.appendChild(headerCopy);
+  }
+
+  const back = document.createElement('div');
+  back.className = 'turn-face turn-face--back';
+  leaf.append(front, back);
+  stage.append(under, leaf);
+  document.body.appendChild(stage);
+
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    try { sessionStorage.setItem('bj-page-turn', backward ? 'back' : 'forward'); } catch (error) { /* ignore */ }
+    go();
+  };
+  leaf.addEventListener('transitionend', (event) => { if (event.propertyName === 'transform') finish(); });
+  window.setTimeout(finish, 1100);
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    stage.classList.add('is-turning');
+    leaf.style.transform = `rotateY(${backward ? 180 : -180}deg)`;
+  }));
+}
+
+// Coming back with the browser's Back button can restore a page mid-turn.
+window.addEventListener('pageshow', (event) => {
+  if (!event.persisted) return;
+  document.querySelectorAll('.turn-stage').forEach((stage) => stage.remove());
+  document.documentElement.classList.remove('is-arriving');
+  turnPage.busy = false;
+});
+
+// Every link to another chapter turns the page.
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('a[href]');
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (link.target === '_blank' || link.hasAttribute('download')) return;
+  const url = new URL(link.href, window.location.href);
+  if (url.origin !== window.location.origin || url.pathname === window.location.pathname || !/\.html$|\/$/.test(url.pathname)) return;
+  event.preventDefault();
+  turnPage(url.href);
+});
+
+// On a phone, swipe left or right across the page to turn it.
+(() => {
+  let start = null;
+  document.addEventListener('touchstart', (event) => {
+    const touch = event.touches[0];
+    start = event.touches.length === 1 && !event.target.closest('.work-grid, dialog, input, textarea')
+      ? { x: touch.clientX, y: touch.clientY, time: Date.now() } : null;
+  }, { passive: true });
+  document.addEventListener('touchend', (event) => {
+    if (!start) return;
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    const quick = Date.now() - start.time < 600;
+    start = null;
+    if (!quick || Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8) return;
+    const link = document.querySelector(`a.page-turn[rel="${dx < 0 ? 'next' : 'prev'}"]`);
+    if (link) turnPage(link.href);
+  }, { passive: true });
+})();
+
+// Fetch the neighbouring chapters early so the next page is ready when it turns.
+window.addEventListener('load', () => {
+  document.querySelectorAll('a.page-turn[rel]').forEach((link) => {
+    const hint = document.createElement('link');
+    hint.rel = 'prefetch';
+    hint.href = link.href;
+    document.head.appendChild(hint);
+  });
+});
