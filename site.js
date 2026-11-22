@@ -57,3 +57,13 @@ if (form && formSuccess) {
     event.preventDefault();
   });
 }
+// Book page numbers: each section is a two-page spread (left = even, right = odd).
+document.querySelectorAll('main > section').forEach((section, index) => {
+  [['left', index * 2 + 2], ['right', index * 2 + 3]].forEach(([side, number]) => {
+    const label = document.createElement('span');
+    label.className = `page-num page-num--${side}`;
+    label.setAttribute('aria-hidden', 'true');
+    label.textContent = number;
+    section.appendChild(label);
+  });
+});
