@@ -650,3 +650,15 @@ html:has(body.env-sea) { background: #123b6b; }
   .cover-book { width: min(400px, 84vw, calc((100svh - 12rem) * 1240 / 1754)); }
   .cover--art .cover-open { font-size: .9rem; }
 }
+
+/* Front cover: the lighthouse painting framed in a gold-edged box on the cloth cover */
+.cover-book { width: min(500px, 80vw, calc((100vh - 9rem) * 3 / 4)); }
+.cover--boxed .cover-frame { grid-template-rows: auto minmax(0, 1fr) auto auto; padding: 5.5% 7% 5%; }
+.cover-box { position: relative; height: 100%; max-width: 100%; aspect-ratio: 1240 / 1754; margin: .9em 0 .2em; border: 4px solid #e9d3a1; border-radius: 3px; box-shadow: 0 0 0 5px rgba(0, 0, 0, .2), 0 10px 22px -8px rgba(0, 0, 0, .55); overflow: hidden; }
+.cover-box .cover-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cover--boxed .cover-subtitle { margin-top: 1em; }
+.cover--boxed .cover-open { margin-top: .8em; }
+@media (max-width: 760px) {
+  .cover-book { width: min(400px, 84vw, calc((100svh - 12rem) * 3 / 4)); }
+  .cover--boxed .cover-kicker, .cover--boxed .cover-subtitle, .cover--boxed .cover-open { font-size: .85rem; letter-spacing: .16em; }
+}
