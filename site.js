@@ -251,12 +251,15 @@ function turnPage(href) {
     try { sessionStorage.setItem('bj-page-turn', backward ? 'back' : 'forward'); } catch (error) { /* ignore */ }
     go();
   };
-  leaf.addEventListener('transitionend', (event) => { if (event.propertyName === 'transform') finish(); });
-  window.setTimeout(finish, 900);
+  leaf.addEventListener('animationend', (event) => { if (event.animationName.startsWith('leaf-')) finish(); });
+  window.setTimeout(finish, 950);
 
   requestAnimationFrame(() => requestAnimationFrame(() => {
+    // The leaf turns in two halves: the front shows until the page stands
+    // upright on the spine, then only the blank back shows. This never relies
+    // on backface-visibility, so the page can't show through onto the other side.
+    stage.classList.toggle('is-backward', backward);
     stage.classList.add('is-turning');
-    leaf.style.transform = `rotateY(${backward ? 180 : -180}deg)`;
   }));
 }
 
