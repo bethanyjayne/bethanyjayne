@@ -1,13 +1,15 @@
 // Offline support: the pages and their artwork are kept on the device so the
 // book opens without a connection. Pages are fetched fresh when online and fall
 // back to the saved copy offline; images are served from the saved copy first.
-const VERSION = 'bj-v3';
+const VERSION = 'bj-v4';
 const PAGES = ['./', './index.html', './about.html', './otters.html', './pip.html', './russel.html', './contact.html', './404.html'];
 const CORE = [...PAGES, './styles.css', './fonts.css', './assets/fonts/eb-garamond-normal-latin.woff2', './assets/fonts/eb-garamond-italic-latin.woff2', './website-overrides.css', './site.js', './page-turn.js', './manifest.webmanifest',
   './assets/art/cover-640.webp', './assets/backdrops/sea.jpg', './assets/icons/icon-192.png', './assets/icons/brand-96.webp'];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(CORE)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(VERSION)
+    .then((cache) => cache.addAll(CORE.map((url) => new Request(url, { cache: 'reload' }))))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
@@ -34,12 +36,14 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate' || request.destination === 'style' || request.destination === 'script') {
     // Network first, so updates appear straight away; saved copy when offline.
-    event.respondWith(fetch(request).then(save).catch(() =>
-      caches.match(request).then((hit) => hit || caches.match('./404.html'))));
+    // Skip the browser's 10-minute HTTP cache so updates arrive immediately.
+    event.respondWith(fetch(request, { cache: 'no-cache' }).then(save).catch(() =>
+      caches.match(request).then((hit) => hit || caches.match(request, { ignoreSearch: true }))
+        .then((hit) => hit || caches.match('./404.html'))));
     return;
   }
   // Images and fonts: saved copy first, refreshed in the background.
-  event.respondWith(caches.match(request).then((hit) => {
+  event.respondWith(caches.match(request, { ignoreSearch: false }).then((hit) => {
     const refresh = fetch(request).then(save).catch(() => hit);
     return hit || refresh;
   }));
