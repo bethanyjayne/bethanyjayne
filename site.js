@@ -260,6 +260,8 @@ function nextPageLayer(href) {
     const below = (el) => el.getBoundingClientRect().top > window.innerHeight + 60;
     const spacer = (el) => { const blank = document.createElement('div'); blank.style.height = `${el.getBoundingClientRect().height}px`; return blank; };
     [...layer.querySelectorAll('main > *, .site-footer')].filter(below).forEach((el) => el.replaceWith(spacer(el)));
+    const book = layer.querySelector('.book-pages');
+    if (book) { const r = book.getBoundingClientRect(); layer.dataset.book = JSON.stringify([r.left, r.top, r.width, r.height]); }
     const onScreen = [...layer.querySelectorAll('img')].filter((img) => { const r = img.getBoundingClientRect(); return r.bottom > 0 && r.top < window.innerHeight && r.width > 0; });
     return Promise.all(onScreen.map((img) => (img.decode ? img.decode() : Promise.resolve()).catch(() => {}))).then(() => {
       layer.remove();
@@ -337,18 +339,21 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
   // leaf carries the next page's left half (or right half when turning back),
   // laid out so it reads the right way round once the leaf has turned over.
   const place = (layer, originX, originY) => { Object.assign(layer.style, { left: `${-originX}px`, top: `${-originY}px` }); return layer; };
-  if (dest && cover) {
-    stage.classList.add('has-dest');
-    stage.append(place(dest, 0, 0), under, leaf);
-  } else if (dest) {
-    stage.classList.add('has-dest');
-    // The book stays the same book: only the world around it changes, so the
-    // next chapter's painting fades in behind the book while the page turns,
-    // and the chapter's name in the label above the book fades across too.
+  // The book stays the same book: only the world around it changes, so the
+  // next chapter's painting fades in behind the book while the page turns.
+  if (dest) {
     const world = document.createElement('div');
     world.className = `turn-world ${dest.dataset.page}`;
+    if (cover) world.classList.add('is-waiting');
     world.setAttribute('aria-hidden', 'true');
     document.body.prepend(world);
+  }
+  if (dest && cover) {
+    stage.classList.add('has-dest');
+    stage.append(under, leaf, place(dest, 0, 0));
+  } else if (dest) {
+    stage.classList.add('has-dest');
+    // The chapter's name in the label above the book fades across too.
     const label = document.querySelector('.env-label span');
     const nextLabel = dest.querySelector('.env-label span');
     if (label && nextLabel && label.animate) {
@@ -373,7 +378,27 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     try { sessionStorage.setItem('bj-page-turn', dest ? 'shown' : (backward ? 'back' : 'forward')); } catch (error) { /* ignore */ }
     go();
   };
-  leaf.addEventListener('animationend', (event) => { if (event.animationName.startsWith('leaf-')) finish(); });
+  // Opening the cover goes on for a second step: the blank first page grows
+  // to the size of the open book, the first chapter's world fades in behind
+  // it, and then the chapter itself appears on the page.
+  const growPage = () => {
+    if (!dest.dataset.book || !under.animate) { finish(); return; }
+    const [x, y, w, h] = JSON.parse(dest.dataset.book);
+    const toTop = Math.max(y, 0);
+    const to = { left: `${x}px`, top: `${toTop}px`, width: `${w}px`, height: `${Math.min(y + h, window.innerHeight) - toTop}px` };
+    const from = { left: under.style.left, top: under.style.top, width: under.style.width, height: under.style.height };
+    const ease = 'cubic-bezier(.45, 0, .2, 1)';
+    under.animate([from, to], { duration: 480, easing: ease, fill: 'forwards' });
+    leaf.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease-out', fill: 'forwards' });
+    document.querySelectorAll('.turn-world').forEach((world) => world.classList.add('is-showing'));
+    dest.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: 400, easing: 'ease', fill: 'forwards' })
+      .finished.then(finish, finish);
+  };
+  const opening = Boolean(cover && dest);
+  leaf.addEventListener('animationend', (event) => {
+    if (event.target !== leaf || !event.animationName.startsWith('leaf-')) return;
+    if (opening) growPage(); else finish();
+  });
   // Time everything from when the leaf actually starts moving: the first frame
   // of the turn can take a moment to draw, and the page must not be cleared or
   // left before it has turned.
@@ -385,9 +410,9 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     // Belt and braces: once the page stands upright on the spine, remove its
     // content entirely so nothing can ever show through back to front.
     window.setTimeout(() => { front.replaceChildren(); front.style.opacity = '0'; }, 345);
-    window.setTimeout(finish, 950);
+    window.setTimeout(finish, opening ? 1800 : 950);
   });
-  window.setTimeout(finish, 2500);
+  window.setTimeout(finish, 3000);
 
   requestAnimationFrame(() => requestAnimationFrame(() => {
     // The leaf turns in two halves: the front shows until the page stands
@@ -395,7 +420,7 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     // on backface-visibility, so the page can't show through onto the other side.
     stage.classList.toggle('is-backward', backward);
     stage.classList.add('is-turning');
-    document.querySelectorAll('.turn-world').forEach((world) => world.classList.add('is-showing'));
+    document.querySelectorAll('.turn-world:not(.is-waiting)').forEach((world) => world.classList.add('is-showing'));
   }));
 }
 
