@@ -936,3 +936,33 @@ html.is-turned .reveal { opacity: 1; transition: none; }
    as it settles, so it never lies over the page that has just appeared. */
 .turn-stage.is-cover.has-dest.is-turning .turn-face--back { animation: cover-back .7s linear both; }
 @keyframes cover-back { 0%, 49.9% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Bookshelf: every project at a glance, grouped by how finished it is.
+   A quiet touch of purple, Bethany's favourite colour, marks the shelves. */
+.bookshelf { --plum: #6d4c9c; }
+.bookshelf .section-intro { margin-bottom: 3rem; }
+.shelf { margin-top: 2.4rem; }
+.shelf-label { margin: 0 0 1rem; color: var(--plum); font-size: 1.15rem; font-variant-caps: all-small-caps; letter-spacing: .12em; }
+.shelf-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.2rem 2.2rem; margin: 0; padding: 0 1.4rem; list-style: none; border-bottom: 14px solid #b77a45; box-shadow: 0 10px 0 -4px #8a5428; }
+.shelf-book { display: grid; justify-items: start; gap: .1rem; width: min-content; padding-bottom: .9rem; color: var(--ink); text-decoration: none; }
+.shelf-cover { display: block; height: 190px; border: .4rem solid #fff; background: var(--mat); box-shadow: 0 2px 4px rgba(31, 35, 64, .14), 0 16px 26px -14px rgba(31, 35, 64, .5); transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
+.shelf-cover img { width: auto; height: 100%; max-width: none; }
+.shelf-book:hover .shelf-cover, .shelf-book:focus-visible .shelf-cover { transform: translateY(-8px) rotate(-1.5deg); box-shadow: 0 2px 4px rgba(31, 35, 64, .14), 0 18px 28px -14px rgba(109, 76, 156, .55); }
+.shelf-title { margin-top: .7rem; font-style: italic; font-size: 1.1rem; line-height: 1.25; min-width: 9rem; }
+.shelf-meta { color: var(--muted); font-size: .95rem; line-height: 1.3; font-variant-caps: all-small-caps; letter-spacing: .08em; }
+.shelf-book:hover .shelf-title { text-decoration: underline; text-decoration-color: var(--plum); text-underline-offset: .3em; }
+.shelf-book--pending .shelf-cover { display: flex; align-items: flex-end; justify-content: center; overflow: hidden; width: 150px; border: 2px dashed rgba(109, 76, 156, .4); background: repeating-linear-gradient(-45deg, transparent 0 11px, rgba(109, 76, 156, .07) 11px 12px); box-shadow: none; }
+.shelf-book--pending .shelf-cover img { width: auto; height: 150px; }
+@media (max-width: 760px) {
+  .shelf-row { gap: 1rem 1.2rem; padding: 0 .6rem; }
+  .shelf-cover { height: 120px; border-width: .3rem; }
+  .shelf-book--pending .shelf-cover { width: 100px; }
+  .shelf-book--pending .shelf-cover img { height: 95px; }
+  .shelf-title { min-width: 6.5rem; font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) { .shelf-cover { transition: none; } }
+
+/* Email and Instagram in every colophon. */
+.footer-links { display: flex; flex-wrap: wrap; gap: .3rem 1.2rem; grid-column: 1; }
+.footer-links a { color: var(--ink-soft); text-decoration: none; }
+.footer-links a:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--pip); text-underline-offset: .35em; }
