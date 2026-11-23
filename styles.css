@@ -1101,3 +1101,7 @@ body::after { z-index: -2; }
   .nav { position: absolute; z-index: 10; top: 100%; left: calc(50% + var(--gutter) / 2 - 1.2rem); right: auto; display: none; width: auto; min-width: 12rem; padding: .8rem 1.2rem; border: 1px solid var(--rule); background: var(--paper); box-shadow: 0 10px 24px rgba(42, 38, 34, .12); }
   .nav.is-open { display: grid; gap: .3rem; }
 }
+/* The cover painting fades in once it has loaded (with the lighthouse's beam), instead of popping in. */
+html.js .cover-box .cover-art:not(.is-loaded), html.js .cover-box:has(.cover-art:not(.is-loaded)) .cover-beam { opacity: 0; }
+html.js .cover-box .cover-art, html.js .cover-box .cover-beam { transition: opacity .45s ease; }
+.turn-dest .cover-box .cover-art, .turn-clone .cover-box .cover-art, .turn-dest .cover-box .cover-beam, .turn-clone .cover-box .cover-beam { opacity: 1 !important; }

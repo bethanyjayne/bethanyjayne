@@ -287,7 +287,13 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
   const stage = document.createElement('div');
   stage.className = 'turn-stage';
   stage.setAttribute('aria-hidden', 'true');
-  if (cover) stage.classList.add('is-cover');
+  if (cover) {
+    stage.classList.add('is-cover');
+    // The chapter tabs and the hint beside the cover step back as it opens.
+    document.querySelectorAll('.cover-tabs, .cover-hint').forEach((el) => {
+      if (el.animate) el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: 'ease-out', fill: 'forwards' });
+    });
+  }
   stage.style.setProperty('--shade-dir', backward ? '270deg' : '90deg');
   stage.style.perspectiveOrigin = `${backward ? leafLeft + half : leafLeft}px 50%`;
 
@@ -320,6 +326,9 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
   });
   copy.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
   copy.querySelectorAll('.page-turn, dialog').forEach((el) => el.remove());
+  // The copied pictures are already loaded: draw them in the very first frame
+  // rather than leaving a blank space while they decode again.
+  copy.querySelectorAll('img').forEach((img) => { img.decoding = 'sync'; img.loading = 'eager'; });
   Object.assign(copy.style, { left: `${rect.left - leafLeft}px`, top: `${rect.top - top}px`, width: `${rect.width}px` });
   front.appendChild(copy);
 
@@ -384,15 +393,22 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
   // Opening the cover goes on for a second step: the blank first page grows
   // to the size of the open book, the first chapter's world fades in behind
   // it, and then the chapter itself appears on the page.
+  let grown = false;
   const growPage = () => {
+    if (grown) return;
+    grown = true;
     if (!dest.dataset.book || !under.animate) { finish(); return; }
     const [x, y, w, h] = JSON.parse(dest.dataset.book);
     const toTop = Math.max(y, 0);
     const to = { left: `${x}px`, top: `${toTop}px`, width: `${w}px`, height: `${Math.min(y + h, window.innerHeight) - toTop}px` };
-    const from = { left: under.style.left, top: under.style.top, width: under.style.width, height: under.style.height };
+    // Start from the whole open spread (the inside of the cover and the first
+    // page), so the book never seems to shrink back to one page before growing.
+    const pageWidth = parseFloat(under.style.width);
+    const from = { left: `${parseFloat(under.style.left) - pageWidth}px`, top: under.style.top, width: `${pageWidth * 2}px`, height: under.style.height };
     const ease = 'cubic-bezier(.45, 0, .2, 1)';
     under.animate([from, to], { duration: 480, easing: ease, fill: 'forwards' });
-    leaf.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease-out', fill: 'forwards' });
+    // Fade the inside of the cover itself (fading the whole 3D leaf would flatten it and snap).
+    back.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 360, easing: 'ease-in-out', fill: 'forwards' });
     document.querySelectorAll('.turn-world').forEach((world) => world.classList.add('is-showing'));
     dest.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: 400, easing: 'ease', fill: 'forwards' })
       .finished.then(finish, finish);
@@ -412,12 +428,23 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     started = true;
     // Belt and braces: once the page stands upright on the spine, remove its
     // content entirely so nothing can ever show through back to front.
-    window.setTimeout(() => { front.replaceChildren(); front.style.opacity = '0'; }, 345);
+    window.setTimeout(() => { front.style.visibility = 'hidden'; }, 345);
     window.setTimeout(finish, opening ? 1800 : 950);
+    // The cover slows right down as it settles, so the page starts to grow
+    // just before it lands rather than after a pause.
+    if (opening) window.setTimeout(growPage, 560);
   });
   window.setTimeout(finish, 3000);
 
-  requestAnimationFrame(() => requestAnimationFrame(() => {
+  // Keep the turn out of sight until the copied pictures are ready to draw, so
+  // the first frame never shows a blank picture (the real page shows meanwhile).
+  stage.style.opacity = '0';
+  const pictures = [...front.querySelectorAll('img')].map((img) => (img.decode ? img.decode().catch(() => {}) : null));
+  Promise.race([Promise.all(pictures), new Promise((resolve) => { window.setTimeout(resolve, 250); })]).then(() => {
+    stage.style.opacity = '';
+    startTurn();
+  });
+  const startTurn = () => requestAnimationFrame(() => requestAnimationFrame(() => {
     // The leaf turns in two halves: the front shows until the page stands
     // upright on the spine, then only the blank back shows. This never relies
     // on backface-visibility, so the page can't show through onto the other side.
@@ -516,6 +543,7 @@ window.addEventListener('pageshow', (event) => {
     label.getAnimations().forEach((animation) => animation.cancel());
     label.textContent = label.dataset.text;
   });
+  document.querySelectorAll('.cover-tabs, .cover-hint').forEach((el) => el.getAnimations().forEach((animation) => animation.cancel()));
   turnPage.busy = false;
 });
 
