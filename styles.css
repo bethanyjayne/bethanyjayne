@@ -593,8 +593,6 @@ html:has(body.env-meadow) { background: #4f9a3a; }
    ============================================================ */
 .about-page .page-hero::after { background: url('./assets/art/otter-waving-1280.webp') center / cover no-repeat; }
 .otters-page .page-hero::after { background: url('./assets/art/otters-stone-1280.webp') center / cover no-repeat; }
-.pip-page .page-hero::after { background: url('./assets/art/pip-scene.webp') center / cover no-repeat; }
-.contact-page .page-hero::after { background: url('./assets/art/otters-scene.webp') center / cover no-repeat; }
 .russel-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
 
 /* Russel's chapter: warm sketchbook paper until the artwork arrives */
@@ -807,4 +805,39 @@ body { overscroll-behavior-y: none; }
   /* app-like: chrome text isn't selectable, artwork can't be dragged out */
   .tab-bar, .site-header, .page-turn, .cover-tabs, .env-label { -webkit-user-select: none; user-select: none; }
   img { -webkit-user-drag: none; -webkit-touch-callout: none; }
+}
+
+/* ============================================================
+   Speed
+   ============================================================ */
+/* The environment painting sits on its own fixed layer (handled by the
+   graphics chip) instead of a fixed background, which many phones repaint
+   on every scroll. */
+body { background: none; }
+body::after { content: ''; position: fixed; z-index: -1; inset: 0; background: var(--env-bg); transform: translateZ(0); pointer-events: none; }
+
+/* Chapter openers: the high-resolution painting on large screens, a lighter one on phones */
+.pip-page .page-hero::after { background: url('./assets/art/pip-scene-1280.webp') center / cover no-repeat; }
+.contact-page .page-hero::after { background: url('./assets/art/otters-scene-1280.webp') center / cover no-repeat; }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .about-page .page-hero::after { background-image: url('./assets/art/otter-waving-640.webp'); }
+  .otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-640.webp'); }
+  .pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-640.webp'); }
+  .contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-640.webp'); }
+}
+/* Sections below the fold skip rendering work until they are scrolled near */
+main > section + section { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+/* environment label: readable over any painting */
+.env-label span { display: inline-block; padding: .25rem .9rem .3rem; border-radius: 999px; color: #fff; background: rgba(10, 22, 50, .62); text-shadow: none; }
+.env-sketch .env-label span { background: rgba(70, 52, 32, .78); }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) { .env-label span { padding: 0; background: none; } }
+/* the cat keeps its own proportions */
+.character-figure--cat, [data-habitat='studio'] .character-figure--cat { height: auto !important; aspect-ratio: auto; }
+/* phones: lighter environment paintings (they sit mostly behind the page) */
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .env-sea { --env-bg: linear-gradient(rgba(6, 22, 52, .25), rgba(6, 22, 52, .45)), url('./assets/backdrops/sea-800.jpg') center / cover; }
+  .env-river { --env-bg: linear-gradient(rgba(10, 24, 82, .28), rgba(10, 24, 82, .42)), url('./assets/backdrops/river-800.jpg') center / cover; }
+  .env-meadow { --env-bg: linear-gradient(rgba(255, 255, 255, .05), rgba(20, 50, 20, .18)), url('./assets/backdrops/meadow-800.jpg') center / cover; }
+  .env-forest { --env-bg: linear-gradient(rgba(20, 70, 40, .12), rgba(20, 70, 40, .3)), url('./assets/backdrops/forest-800.jpg') center / cover; }
+  .env-dusk { --env-bg: linear-gradient(rgba(8, 16, 50, .5), rgba(8, 16, 50, .68)), url('./assets/backdrops/river-800.jpg') center / cover; }
 }

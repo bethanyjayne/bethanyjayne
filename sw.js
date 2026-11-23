@@ -1,10 +1,10 @@
 // Offline support: the pages and their artwork are kept on the device so the
 // book opens without a connection. Pages are fetched fresh when online and fall
 // back to the saved copy offline; images are served from the saved copy first.
-const VERSION = 'bj-v1';
+const VERSION = 'bj-v2';
 const PAGES = ['./', './index.html', './about.html', './otters.html', './pip.html', './russel.html', './contact.html', './404.html'];
-const CORE = [...PAGES, './styles.css', './website-overrides.css', './site.js', './page-turn.js', './manifest.webmanifest',
-  './assets/art/cover-640.webp', './assets/backdrops/sea.jpg', './assets/icons/icon-192.png', './assets/favicon.png'];
+const CORE = [...PAGES, './styles.css', './fonts.css', './assets/fonts/eb-garamond-normal-latin.woff2', './assets/fonts/eb-garamond-italic-latin.woff2', './website-overrides.css', './site.js', './page-turn.js', './manifest.webmanifest',
+  './assets/art/cover-640.webp', './assets/backdrops/sea.jpg', './assets/icons/icon-192.png', './assets/icons/brand-96.webp'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(CORE)).then(() => self.skipWaiting()));
