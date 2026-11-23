@@ -31,6 +31,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Stamp the build version
+        # Lets open pages notice a newer deploy and offer a refresh (see update.js).
+        run: |
+          BUILD="${GITHUB_SHA::12}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+          printf '{"version":"%s"}\n' "$BUILD" > version.json
+          sed -i "s/__SITE_BUILD__/$BUILD/" update.js
+          grep -q "$BUILD" update.js
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

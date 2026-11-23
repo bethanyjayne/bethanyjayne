@@ -420,6 +420,12 @@ window.addEventListener('load', () => {
   if ('requestIdleCallback' in window) window.requestIdleCallback(ready, { timeout: 2000 }); else window.setTimeout(ready, 600);
 });
 
+// Offer a refresh when a newer version of the site has been published.
+const updateCheck = document.createElement('script');
+updateCheck.src = '/update.js';
+updateCheck.defer = true;
+document.head.appendChild(updateCheck);
+
 // Installable web app: keep the book available offline.
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then((reg) => reg.update()).catch(() => {}); });
