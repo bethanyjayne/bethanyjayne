@@ -1105,3 +1105,26 @@ body::after { z-index: -2; }
 html.js .cover-box .cover-art:not(.is-loaded), html.js .cover-box:has(.cover-art:not(.is-loaded)) .cover-beam { opacity: 0; }
 html.js .cover-box .cover-art, html.js .cover-box .cover-beam { transition: opacity .45s ease; }
 .turn-dest .cover-box .cover-art, .turn-clone .cover-box .cover-art, .turn-dest .cover-box .cover-beam, .turn-clone .cover-box .cover-beam { opacity: 1 !important; }
+/* Bookshelf, refined: one shelf on each page of the spread, so nothing sits
+   across the spine. Every book is the same height and stands on the plank,
+   with its label on the shelf edge below; the books scale to fit the page. */
+.shelf { container-type: inline-size; }
+.shelf-row { --h: clamp(52px, calc((100cqi - 6.4rem) / 3.3), 170px); position: relative; flex-wrap: nowrap; align-items: flex-start; gap: 0 1.6rem; padding: 0 .6rem; border-bottom: 0; box-shadow: none; }
+.shelf-row::before { content: ''; position: absolute; z-index: 0; left: 0; right: 0; top: var(--h); height: 12px; border-radius: 1px; background: linear-gradient(#c58a55, #b77a45 45%, #a86d3b); box-shadow: 0 5px 0 -1px #8a5428, 0 14px 14px -10px rgba(60, 35, 15, .45); }
+.shelf-book { position: relative; z-index: 1; width: min-content; padding-bottom: 0; }
+.shelf-cover { height: var(--h); transform-origin: 50% 100%; }
+.shelf-book:hover .shelf-cover, .shelf-book:focus-visible .shelf-cover { transform: translateY(-6px); }
+.shelf-title { min-width: 0; margin-top: calc(12px + 5px + .75rem); font-size: 1.05rem; }
+.shelf-book--pending .shelf-cover { width: calc(var(--h) * .8); }
+.shelf-book--pending .shelf-cover img { height: 82%; }
+@media (min-width: 901px) {
+  .bookshelf .section-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); align-items: start; }
+  .bookshelf .section-intro { grid-column: 1 / -1; }
+  .bookshelf .shelf { margin-top: 0; }
+}
+@media (max-width: 760px) {
+  .shelf-row { --h: clamp(56px, calc((100cqi - 5.4rem) / 3.4), 150px); gap: 0 1rem; padding: 0 .3rem; }
+  .shelf-title { font-size: .98rem; }
+  .shelf-meta { font-size: .85rem; }
+}
+.shelf-book--pending { width: max-content; max-width: 12rem; }
