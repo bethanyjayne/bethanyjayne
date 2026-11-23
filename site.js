@@ -327,3 +327,8 @@ window.addEventListener('load', () => {
     document.head.appendChild(hint);
   });
 });
+
+// Installable web app: keep the book available offline.
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
+}
