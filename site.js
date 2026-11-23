@@ -262,6 +262,8 @@ function nextPageLayer(href) {
     [...layer.querySelectorAll('main > *, .site-footer')].filter(below).forEach((el) => el.replaceWith(spacer(el)));
     const book = layer.querySelector('.book-pages');
     if (book) { const r = book.getBoundingClientRect(); layer.dataset.book = JSON.stringify([r.left, r.top, r.width, r.height]); }
+    const coverBoard = layer.querySelector('.cover');
+    if (coverBoard) { const r = coverBoard.getBoundingClientRect(); layer.dataset.cover = JSON.stringify([r.left, r.top, r.width, r.height]); }
     const onScreen = [...layer.querySelectorAll('img')].filter((img) => { const r = img.getBoundingClientRect(); return r.bottom > 0 && r.top < window.innerHeight && r.width > 0; });
     return Promise.all(onScreen.map((img) => (img.decode ? img.decode() : Promise.resolve()).catch(() => {}))).then(() => {
       layer.remove();
@@ -272,6 +274,7 @@ function nextPageLayer(href) {
 }
 
 function turnLeaf({ target, backward, cover, pages, go, dest }) {
+  if (dest && !cover && dest.dataset.cover && document.body.animate) { closeBook({ pages, go, dest }); return; }
 
   const single = Boolean(cover) || window.matchMedia('(max-width: 900px), (max-height: 540px) and (orientation: landscape)').matches;
   const rect = pages.getBoundingClientRect();
@@ -422,6 +425,86 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     stage.classList.add('is-turning');
     document.querySelectorAll('.turn-world:not(.is-waiting)').forEach((world) => world.classList.add('is-showing'));
   }));
+}
+
+// Going back to the cover closes the book: the reverse of opening it. The page
+// clears to blank paper, shrinks to the size of the cover while the sea fades
+// in around it, and then the cover swings shut over it.
+function closeBook({ pages, go, dest }) {
+  const rect = pages.getBoundingClientRect();
+  const top = Math.max(rect.top, 0);
+  const box = (el, [x, y, w, h]) => Object.assign(el.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
+  const [cx, cy, cw, ch] = JSON.parse(dest.dataset.cover);
+
+  const stage = document.createElement('div');
+  stage.className = 'turn-stage is-cover is-closing has-dest';
+  stage.setAttribute('aria-hidden', 'true');
+  stage.style.perspectiveOrigin = `${cx}px 50%`;
+
+  const world = document.createElement('div');
+  world.className = `turn-world ${dest.dataset.page}`;
+  world.setAttribute('aria-hidden', 'true');
+  document.body.prepend(world);
+
+  // the cover page around the book (tabs, label), without its cover for now
+  Object.assign(dest.style, { left: '0px', top: '0px', opacity: '0' });
+  dest.querySelector('.cover').style.visibility = 'hidden';
+
+  const page = document.createElement('div');
+  page.className = 'turn-under';
+  box(page, [rect.left, top, rect.width, Math.min(rect.bottom, window.innerHeight) - top]);
+
+  const leaf = document.createElement('div');
+  leaf.className = 'turn-leaf';
+  box(leaf, [cx, cy, cw, ch]);
+  leaf.style.transformOrigin = 'left center';
+  leaf.style.transform = 'rotateY(-180deg)';
+  leaf.style.visibility = 'hidden';
+  const front = document.createElement('div');
+  front.className = 'turn-face turn-face--front';
+  const board = dest.querySelector('.cover').cloneNode(true);
+  board.classList.add('turn-clone');
+  board.style.visibility = '';
+  Object.assign(board.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', margin: '0' });
+  front.appendChild(board);
+  const back = document.createElement('div');
+  back.className = 'turn-face turn-face--back';
+  leaf.append(front, back);
+
+  stage.append(dest, page, leaf);
+  document.body.appendChild(stage);
+
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    try { sessionStorage.setItem('bj-page-turn', 'shown'); } catch (error) { /* ignore */ }
+    go();
+  };
+  window.setTimeout(finish, 3000);
+  const ease = 'cubic-bezier(.45, 0, .2, 1)';
+  const fill = 'forwards';
+  // 1. the page clears to blank paper
+  page.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: 'ease', fill }).finished.then(() => {
+    // 2. it shrinks to the size of the cover while the sea comes back around it
+    world.classList.add('is-showing');
+    dest.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 420, easing: 'ease', fill });
+    return page.animate([
+      { left: page.style.left, top: page.style.top, width: page.style.width, height: page.style.height },
+      { left: `${cx}px`, top: `${cy}px`, width: `${cw}px`, height: `${ch}px` },
+    ], { duration: 480, easing: ease, fill }).finished;
+  }).then(() => {
+    // 3. the cover swings shut: its inside shows until it stands upright, then its front
+    leaf.style.visibility = '';
+    const turn = { duration: 700, fill };
+    back.animate([{ opacity: 1 }, { opacity: 1, offset: 0.5 }, { opacity: 0, offset: 0.5 }, { opacity: 0 }], turn);
+    front.animate([{ opacity: 0 }, { opacity: 0, offset: 0.5 }, { opacity: 1, offset: 0.5 }, { opacity: 1 }], turn);
+    return leaf.animate([
+      { transform: 'rotateY(-180deg)', easing: 'cubic-bezier(.5, 0, .9, .55)' },
+      { transform: 'rotateY(-90deg)', offset: 0.5, easing: 'cubic-bezier(.1, .45, .5, 1)' },
+      { transform: 'rotateY(0deg)' },
+    ], turn).finished;
+  }).then(finish, finish);
 }
 
 // Coming back with the browser's Back button can restore a page mid-turn.
