@@ -6,13 +6,13 @@
     <image:image><image:loc>https://bethanyjayne.co.uk/assets/art/cover-1240.webp</image:loc></image:image>
   </url>
   <url>
-    <loc>https://bethanyjayne.co.uk/about.html</loc>
+    <loc>https://bethanyjayne.co.uk/about/</loc>
     <lastmod>2026-11-23</lastmod>
     <image:image><image:loc>https://bethanyjayne.co.uk/assets/4e4cc5_b89f6ea50577454bb355c0a60e1accde~mv2.jpeg</image:loc></image:image>
     <image:image><image:loc>https://bethanyjayne.co.uk/assets/art/cat.webp</image:loc></image:image>
   </url>
   <url>
-    <loc>https://bethanyjayne.co.uk/otters.html</loc>
+    <loc>https://bethanyjayne.co.uk/otters/</loc>
     <lastmod>2026-11-23</lastmod>
     <image:image><image:loc>https://bethanyjayne.co.uk/assets/art/otter-ball-1280.webp</image:loc></image:image>
     <image:image><image:loc>https://bethanyjayne.co.uk/assets/art/otters-in-love-1280.webp</image:loc></image:image>
@@ -25,18 +25,18 @@
     <image:image><image:loc>https://bethanyjayne.co.uk/assets/art/otter-snack-1280.webp</image:loc></image:image>
   </url>
   <url>
-    <loc>https://bethanyjayne.co.uk/pip.html</loc>
+    <loc>https://bethanyjayne.co.uk/pip/</loc>
     <lastmod>2026-11-23</lastmod>
     <image:image><image:loc>https://bethanyjayne.co.uk/assets/art/pip-scene-1280.webp</image:loc></image:image>
     <image:image><image:loc>https://bethanyjayne.co.uk/assets/art/pip-adhd-1280.webp</image:loc></image:image>
     <image:image><image:loc>https://bethanyjayne.co.uk/assets/art/pip-deforestation-1280.webp</image:loc></image:image>
   </url>
   <url>
-    <loc>https://bethanyjayne.co.uk/russel.html</loc>
+    <loc>https://bethanyjayne.co.uk/russel/</loc>
     <lastmod>2026-11-23</lastmod>
   </url>
   <url>
-    <loc>https://bethanyjayne.co.uk/contact.html</loc>
+    <loc>https://bethanyjayne.co.uk/contact/</loc>
     <lastmod>2026-11-23</lastmod>
   </url>
 </urlset>
