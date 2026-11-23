@@ -5,7 +5,7 @@
 if (!document.querySelector('link[data-site-overrides], link[href$="website-overrides.css"]')) {
   const overrides = document.createElement('link');
   overrides.rel = 'stylesheet';
-  overrides.href = './website-overrides.css';
+  overrides.href = '/website-overrides.css';
   overrides.dataset.siteOverrides = 'true';
   document.head.appendChild(overrides);
 }
@@ -205,8 +205,10 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
 // Works in every modern browser.
 // ---------------------------------------------------------------------------
 function turnPage(href) {
-  const chapters = ['index.html', 'about.html', 'otters.html', 'pip.html', 'russel.html', 'contact.html'];
-  const chapterOf = (url) => chapters.indexOf(url.pathname.split('/').pop() || 'index.html');
+  // Chapters live in their own folders (/about/, /otters/ ...); old .html
+  // addresses still count as the same chapter.
+  const chapters = ['', 'about', 'otters', 'pip', 'russel', 'contact'];
+  const chapterOf = (url) => chapters.indexOf(url.pathname.replace(/(\/index)?\.html$|\/$/, '').split('/').pop());
   const target = new URL(href, window.location.href);
   const from = chapterOf(new URL(window.location.href));
   const to = chapterOf(target);
@@ -418,5 +420,5 @@ window.addEventListener('load', () => {
 
 // Installable web app: keep the book available offline.
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => reg.update()).catch(() => {}); });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then((reg) => reg.update()).catch(() => {}); });
 }
