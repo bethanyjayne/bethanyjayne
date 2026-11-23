@@ -222,7 +222,7 @@ function turnPage(href) {
   if (!pages || from < 0 || to < 0 || from === to || still) { go(); return; }
   turnPage.busy = true;
   // Draw the next page first (or give up after a moment and turn onto blank paper).
-  const giveUp = new Promise((resolve) => { window.setTimeout(resolve, 700, null); });
+  const giveUp = new Promise((resolve) => { window.setTimeout(resolve, 400, null); });
   Promise.race([nextPageLayer(target.href), giveUp])
     .catch(() => null)
     .then((dest) => turnLeaf({ target, backward: to < from, cover, pages, go, dest }));
@@ -254,6 +254,11 @@ function nextPageLayer(href) {
     // Measure it off screen, then wait for the pictures that will be on screen.
     Object.assign(layer.style, { position: 'fixed', left: '0px', top: '0px', width: `${document.documentElement.clientWidth}px`, height: `${window.innerHeight}px`, visibility: 'hidden' });
     document.body.appendChild(layer);
+    // Keep only what is on screen; everything below becomes an empty spacer of
+    // the same height, so the first frame of the turn is quick to draw.
+    const below = (el) => el.getBoundingClientRect().top > window.innerHeight + 60;
+    const spacer = (el) => { const blank = document.createElement('div'); blank.style.height = `${el.getBoundingClientRect().height}px`; return blank; };
+    [...layer.querySelectorAll('main > *, .site-footer')].filter(below).forEach((el) => el.replaceWith(spacer(el)));
     const onScreen = [...layer.querySelectorAll('img')].filter((img) => { const r = img.getBoundingClientRect(); return r.bottom > 0 && r.top < window.innerHeight && r.width > 0; });
     return Promise.all(onScreen.map((img) => (img.decode ? img.decode() : Promise.resolve()).catch(() => {}))).then(() => {
       layer.remove();
@@ -353,7 +358,17 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     go();
   };
   leaf.addEventListener('animationend', (event) => { if (event.animationName.startsWith('leaf-')) finish(); });
-  window.setTimeout(finish, 950);
+  // Time everything from when the leaf actually starts moving: the first frame
+  // of the turn can take a moment to draw, and the page must not be cleared or
+  // left before it has turned.
+  leaf.addEventListener('animationstart', (event) => {
+    if (!event.animationName.startsWith('leaf-')) return;
+    // Belt and braces: once the page stands upright on the spine, remove its
+    // content entirely so nothing can ever show through back to front.
+    window.setTimeout(() => { front.replaceChildren(); front.style.opacity = '0'; }, 345);
+    window.setTimeout(finish, 950);
+  }, { once: true });
+  window.setTimeout(finish, 2500);
 
   requestAnimationFrame(() => requestAnimationFrame(() => {
     // The leaf turns in two halves: the front shows until the page stands
@@ -361,9 +376,6 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     // on backface-visibility, so the page can't show through onto the other side.
     stage.classList.toggle('is-backward', backward);
     stage.classList.add('is-turning');
-    // Belt and braces: once the page stands upright on the spine, remove its
-    // content entirely so nothing can ever show through back to front.
-    window.setTimeout(() => { front.replaceChildren(); front.style.opacity = '0'; }, 345);
   }));
 }
 
@@ -419,6 +431,11 @@ window.addEventListener('load', () => {
   const ready = () => document.querySelectorAll('a[rel="next"], a[rel="prev"], .cover-tabs a').forEach((link) => fetchPage(link.href).catch(() => {}));
   if ('requestIdleCallback' in window) window.requestIdleCallback(ready, { timeout: 2000 }); else window.setTimeout(ready, 600);
 });
+// Any other chapter link: start fetching as soon as a finger or pointer lands on it.
+['pointerdown', 'pointerover', 'focusin'].forEach((type) => document.addEventListener(type, (event) => {
+  const link = event.target.closest && event.target.closest('a[href]');
+  if (link && link.origin === window.location.origin && /\/$|\.html$/.test(link.pathname) && link.pathname !== window.location.pathname) fetchPage(link.href).catch(() => {});
+}, { passive: true }));
 
 // Installable web app: keep the book available offline.
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {

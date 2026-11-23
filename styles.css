@@ -932,3 +932,7 @@ html.is-turned .reveal { opacity: 1; transition: none; }
 }
 /* Russel and the missing page: one pill in the running head, not a pill inside a pill */
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) { .env-sketch .env-label span { background: none; } }
+/* Opening the cover onto the first page: the inside of the cover fades away
+   as it settles, so it never lies over the page that has just appeared. */
+.turn-stage.is-cover.has-dest.is-turning .turn-face--back { animation: cover-back .7s linear both; }
+@keyframes cover-back { 0%, 49.9% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
