@@ -199,8 +199,10 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
 // ---------------------------------------------------------------------------
 // Page turning between chapters. The visible page is copied onto a "leaf"
 // that turns over the spine (right page forwards, left page backwards; on a
-// phone the whole page turns from its edge), then the next chapter loads and
-// fades in from blank paper. Works in every modern browser.
+// phone the whole page turns from its edge). The next chapter is drawn
+// underneath before the turn starts, so turning the page reveals the real next
+// page (the right way round), and it is already there when it loads.
+// Works in every modern browser.
 // ---------------------------------------------------------------------------
 function turnPage(href) {
   const chapters = ['index.html', 'about.html', 'otters.html', 'pip.html', 'russel.html', 'contact.html'];
@@ -215,8 +217,50 @@ function turnPage(href) {
   if (turnPage.busy) return;
   if (!pages || from < 0 || to < 0 || from === to || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { go(); return; }
   turnPage.busy = true;
+  // Draw the next page first (or give up after a moment and turn onto blank paper).
+  const giveUp = new Promise((resolve) => { window.setTimeout(resolve, 700, null); });
+  Promise.race([nextPageLayer(target.href), giveUp])
+    .catch(() => null)
+    .then((dest) => turnLeaf({ target, backward: to < from, cover, pages, go, dest }));
+}
 
-  const backward = to < from;
+// The next chapter, laid out as it will look when it opens (scrolled to the top),
+// in a layer the size of the screen. Resolves once its pictures on screen are ready.
+const nextPages = new Map();
+function fetchPage(href) {
+  const url = new URL(href, window.location.href);
+  url.hash = '';
+  if (!nextPages.has(url.href)) {
+    nextPages.set(url.href, fetch(url.href, { credentials: 'same-origin' })
+      .then((response) => { if (!response.ok) throw new Error(response.status); return response.text(); })
+      .catch((error) => { nextPages.delete(url.href); throw error; }));
+  }
+  return nextPages.get(url.href);
+}
+function nextPageLayer(href) {
+  return fetchPage(href).then((html) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const layer = document.createElement('div');
+    layer.className = `turn-dest ${doc.body.className}`;
+    doc.body.querySelectorAll('script, dialog, .skip-link').forEach((el) => el.remove());
+    doc.body.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+    doc.body.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
+    doc.body.querySelectorAll('img[loading="lazy"]').forEach((img) => { img.loading = 'eager'; });
+    layer.append(...[...doc.body.childNodes].map((node) => document.importNode(node, true)));
+    // Measure it off screen, then wait for the pictures that will be on screen.
+    Object.assign(layer.style, { position: 'fixed', left: '0px', top: '0px', width: `${document.documentElement.clientWidth}px`, height: `${window.innerHeight}px`, visibility: 'hidden' });
+    document.body.appendChild(layer);
+    const onScreen = [...layer.querySelectorAll('img')].filter((img) => { const r = img.getBoundingClientRect(); return r.bottom > 0 && r.top < window.innerHeight && r.width > 0; });
+    return Promise.all(onScreen.map((img) => (img.decode ? img.decode() : Promise.resolve()).catch(() => {}))).then(() => {
+      layer.remove();
+      Object.assign(layer.style, { position: '', visibility: '' });
+      return layer;
+    });
+  });
+}
+
+function turnLeaf({ target, backward, cover, pages, go, dest }) {
+
   const single = Boolean(cover) || window.matchMedia('(max-width: 900px), (max-height: 540px) and (orientation: landscape)').matches;
   const rect = pages.getBoundingClientRect();
   const top = Math.max(rect.top, 0);
@@ -278,14 +322,30 @@ function turnPage(href) {
   const back = document.createElement('div');
   back.className = 'turn-face turn-face--back';
   leaf.append(front, back);
-  stage.append(under, leaf);
+  // The next page, positioned where it will sit on the screen. Underneath the
+  // turning leaf it shows straight away; on a two-page spread the back of the
+  // leaf carries the next page's left half (or right half when turning back),
+  // laid out so it reads the right way round once the leaf has turned over.
+  const place = (layer, originX, originY) => { Object.assign(layer.style, { left: `${-originX}px`, top: `${-originY}px` }); return layer; };
+  if (dest && cover) {
+    stage.classList.add('has-dest');
+    stage.append(place(dest, 0, 0), under, leaf);
+  } else if (dest) {
+    stage.classList.add('has-dest');
+    under.appendChild(place(dest, leafLeft, top));
+    if (!single) back.appendChild(place(dest.cloneNode(true), backward ? leafLeft + half : leafLeft - half, top));
+    stage.append(under, leaf);
+  } else {
+    stage.append(under, leaf);
+  }
   document.body.appendChild(stage);
 
   let done = false;
   const finish = () => {
     if (done) return;
     done = true;
-    try { sessionStorage.setItem('bj-page-turn', backward ? 'back' : 'forward'); } catch (error) { /* ignore */ }
+    // If the next page was already showing, it simply appears; otherwise it fades in from blank paper.
+    try { sessionStorage.setItem('bj-page-turn', dest ? 'shown' : (backward ? 'back' : 'forward')); } catch (error) { /* ignore */ }
     go();
   };
   leaf.addEventListener('animationend', (event) => { if (event.animationName.startsWith('leaf-')) finish(); });
@@ -307,7 +367,7 @@ function turnPage(href) {
 window.addEventListener('pageshow', (event) => {
   if (!event.persisted) return;
   document.querySelectorAll('.turn-stage').forEach((stage) => stage.remove());
-  document.documentElement.classList.remove('is-arriving');
+  document.documentElement.classList.remove('is-arriving', 'is-turned');
   turnPage.busy = false;
 });
 
@@ -351,6 +411,9 @@ window.addEventListener('load', () => {
     hint.href = link.href;
     document.head.appendChild(hint);
   });
+  // Keep the neighbouring chapters' text ready, so the next page can be drawn under the turning one.
+  const ready = () => document.querySelectorAll('a[rel="next"], a[rel="prev"], .cover-tabs a').forEach((link) => fetchPage(link.href).catch(() => {}));
+  if ('requestIdleCallback' in window) window.requestIdleCallback(ready, { timeout: 2000 }); else window.setTimeout(ready, 600);
 });
 
 // Installable web app: keep the book available offline.
