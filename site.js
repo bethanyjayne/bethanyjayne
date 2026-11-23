@@ -249,7 +249,7 @@ function turnPage(href) {
     const headerCopy = header.cloneNode(true);
     headerCopy.classList.add('turn-clone');
     headerCopy.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
-    Object.assign(headerCopy.style, { position: 'absolute', left: `${rect.left - leafLeft}px`, top: `${headerRect.top - top}px`, width: `${rect.width}px`, visibility: 'visible' });
+    Object.assign(headerCopy.style, { position: 'absolute', left: `${rect.left - leafLeft}px`, top: `${headerRect.top - top}px`, width: `${rect.width}px` });
     front.appendChild(headerCopy);
   }
 
@@ -275,6 +275,9 @@ function turnPage(href) {
     // on backface-visibility, so the page can't show through onto the other side.
     stage.classList.toggle('is-backward', backward);
     stage.classList.add('is-turning');
+    // Belt and braces: once the page stands upright on the spine, remove its
+    // content entirely so nothing can ever show through back to front.
+    window.setTimeout(() => { front.replaceChildren(); front.style.opacity = '0'; }, 345);
   }));
 }
 

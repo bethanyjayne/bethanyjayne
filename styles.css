@@ -841,3 +841,11 @@ main > section + section { content-visibility: auto; contain-intrinsic-size: aut
   .env-forest { --env-bg: linear-gradient(rgba(20, 70, 40, .12), rgba(20, 70, 40, .3)), url('./assets/backdrops/forest-800.jpg') center / cover; }
   .env-dusk { --env-bg: linear-gradient(rgba(8, 16, 50, .5), rgba(8, 16, 50, .68)), url('./assets/backdrops/river-800.jpg') center / cover; }
 }
+/* Turning page: fade the front face out at the halfway point (opacity also hides
+   any child that sets its own visibility), and only then show the blank back. */
+.turn-face--front .page-turns, .turn-face--front .page-turn { display: none; }
+.turn-face--back { visibility: visible; opacity: 0; }
+.turn-stage.is-turning .turn-face--front { animation: face-out .7s step-end both; }
+.turn-stage.is-turning .turn-face--back { animation: face-in .7s step-end both; }
+@keyframes face-out { 0% { opacity: 1; } 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes face-in { 0% { opacity: 0; } 49% { opacity: 0; } 50%, 100% { opacity: 1; } }
