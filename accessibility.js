@@ -82,21 +82,42 @@
       let lastY = window.scrollY;
       let ticking = false;
       const set = (hide) => trigger.classList.toggle('is-tucked', hide);
-      // Step aside while the 'Previous' / 'Next' page links pass underneath.
-      const coversPageLink = () => {
-        const t = trigger.getBoundingClientRect();
-        const top = t.top - 24;
-        const bottom = t.bottom + 24;
-        return [...document.querySelectorAll('.page-turn')].some((link) => {
-          const r = link.getBoundingClientRect();
-          return r.width && r.right > t.left && r.left < t.right && r.bottom > top && r.top < bottom;
+      // Step aside whenever words, links or form fields would sit underneath,
+      // so the button never hides the end of a line (the 'Previous' / 'Next'
+      // page links included). Text is measured line by line.
+      const range = document.createRange();
+      const controls = 'main :is(a, button, input, textarea, select), .site-footer :is(a, button), .page-turn';
+      let wordCache = null;
+      const words = () => {
+        if (wordCache) return wordCache;
+        const found = [];
+        if (document.readyState !== 'loading') wordCache = found;
+        document.querySelectorAll('main, .site-footer').forEach((area) => {
+          const walker = document.createTreeWalker(area, NodeFilter.SHOW_TEXT, { acceptNode: (node) => (node.data.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT) });
+          while (walker.nextNode()) found.push(walker.currentNode);
+        });
+        return found;
+      };
+      const coversContent = () => {
+        const r = trigger.getBoundingClientRect();
+        // measure where the button rests, not where its tuck animation left it
+        const lift = trigger.classList.contains('is-tucked') ? 16 : 0;
+        const pad = 10;
+        const t = { left: r.left - pad, right: r.right + pad, top: r.top - lift - pad, bottom: r.bottom - lift + pad };
+        const hits = (box) => box.width && box.right > t.left && box.left < t.right && box.bottom > t.top && box.top < t.bottom;
+        const outside = (el) => el.closest('.turn-dest, .a11y-dialog');
+        if ([...document.querySelectorAll(controls)].some((el) => !outside(el) && hits(el.getBoundingClientRect()))) return true;
+        return words().some((node) => {
+          if (outside(node.parentElement)) return false;
+          range.selectNodeContents(node);
+          return hits(range.getBoundingClientRect()) && [...range.getClientRects()].some(hits);
         });
       };
       const update = () => {
         ticking = false;
         const y = window.scrollY;
         const nearEnd = y + window.innerHeight >= document.documentElement.scrollHeight - 80;
-        if (phone.matches && coversPageLink()) set(true);
+        if (phone.matches && !trigger.matches(':focus-visible') && coversContent()) set(true);
         else if (!phone.matches || y < 120 || nearEnd || trigger.matches(':focus-visible')) set(false);
         else if (y > lastY + 6) set(true);
         else if (y < lastY - 6) set(false);
@@ -108,6 +129,7 @@
       trigger.addEventListener('focus', () => set(false));
       if (phone.addEventListener) phone.addEventListener('change', update);
       window.addEventListener('resize', update, { passive: true });
+      window.addEventListener('load', update);
       update();
     })();
 
@@ -199,6 +221,18 @@
     const closeDialog = () => { if (dialog.open) dialog.close(); };
 
     trigger.addEventListener('click', openDialog);
+    // A quiet second way in from the footer, for when the round button has
+    // stepped aside or a reader looks for the settings at the end of a page.
+    document.querySelectorAll('.footer-links').forEach((links) => {
+      const more = document.createElement('button');
+      more.type = 'button';
+      more.className = 'footer-a11y';
+      more.setAttribute('aria-haspopup', 'dialog');
+      more.setAttribute('aria-controls', 'bj-accessibility-dialog');
+      more.textContent = 'Accessibility';
+      more.addEventListener('click', openDialog);
+      links.appendChild(more);
+    });
     controls.forEach((control) => {
       control.addEventListener('change', () => {
         const key = control.dataset.a11ySetting;

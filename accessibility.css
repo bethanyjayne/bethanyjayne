@@ -162,3 +162,9 @@ html.a11y-simplify-backgrounds .env-label span { background: var(--cover-deep, #
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) { html.a11y-simplify-backgrounds .env-label span { background: none; } }
 html.a11y-simplify-backgrounds .cover--art .cover-open { background: var(--cover-deep, #0b1a48); backdrop-filter: none; }
 html.a11y-simplify-backgrounds :is(.plate-viewer, .a11y-dialog)::backdrop { background: rgba(11, 26, 72, .92); backdrop-filter: none; }
+
+/* ---------- the footer link (a second way in) ---------- */
+.footer-links .footer-a11y { margin: 0; padding: 0; border: 0; color: var(--ink-soft); background: none; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
+.footer-links .footer-a11y:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--pip); text-underline-offset: .35em; }
+.footer-links .footer-a11y:focus-visible { outline: 2px solid var(--a11y-plum); outline-offset: 3px; border-radius: 2px; }
+html.a11y-underline-links .footer-links .footer-a11y { text-decoration: underline; text-underline-offset: .25em; }
