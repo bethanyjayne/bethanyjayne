@@ -1073,3 +1073,19 @@ body::after { z-index: -2; }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
   .cover-page .turn-dest:not(.cover-page) .env-label { position: absolute; margin: 0; }
 }
+/* The next page in a page turn sits inside the current page's <body>, so the
+   current chapter's opener art would otherwise win whenever its rule comes
+   later in this file (most turns backwards). Pin each chapter's art to its own page. */
+.turn-dest .page-hero::after { content: ''; display: block; color: inherit; font-size: inherit; font-style: inherit; background: var(--paper-edge) center / cover no-repeat; }
+.turn-dest.about-page .page-hero::after { background-image: url('./assets/art/otter-waving-1280.webp'); }
+.turn-dest.otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-1280.webp'); }
+.turn-dest.pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-1280.webp'); }
+.turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-1280.webp'); }
+.turn-dest.russel-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .turn-dest.about-page .page-hero::after { background-image: url('./assets/art/otter-waving-640.webp'); }
+  .turn-dest.otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-640.webp'); }
+  .turn-dest.pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-640.webp'); }
+  .turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-640.webp'); }
+  .turn-dest.russel-page .page-hero::after { font-size: 1.3rem; }
+}
