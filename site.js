@@ -62,7 +62,7 @@ if (form && formSuccess) {
     const body = `${message}\n\n${name}\n${email}`;
     window.location.href = `mailto:hello@bethanyjayne.co.uk?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     formSuccess.hidden = false;
-    formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    formSuccess.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
   });
 }
 

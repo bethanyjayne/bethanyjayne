@@ -914,3 +914,21 @@ main > section + section { content-visibility: auto; contain-intrinsic-size: aut
 @keyframes dest-out { from { opacity: 1; } to { opacity: 0; } }
 /* arriving after the turn: the page was already showing, so nothing fades in */
 html.is-turned .reveal { opacity: 1; transition: none; }
+/* ============================================================
+   Polish: small phones, keyboard focus and reduced motion
+   ============================================================ */
+/* Small phones: keep the chapter name from running over "Children's book illustrator" */
+@media (max-width: 420px) {
+  body:not(.cover-page) .env-label, .turn-dest:not(.cover-page) .env-label { right: .75rem; padding-left: .65rem; padding-right: .65rem; letter-spacing: .12em; }
+}
+@media (max-width: 360px) {
+  body:not(.cover-page) .env-label, .turn-dest:not(.cover-page) .env-label { right: .5rem; font-size: .78rem; letter-spacing: .06em; }
+}
+/* A thicker underline on the contact form, so focus is not shown by colour alone */
+.contact-form input:focus-visible, .contact-form textarea:focus-visible { box-shadow: 0 2px 0 var(--accent); }
+@media (prefers-reduced-motion: reduce) {
+  .plate-viewer[open] { animation: none; }
+  html.is-arriving .book-pages > * { animation: none; }
+}
+/* Russel and the missing page: one pill in the running head, not a pill inside a pill */
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) { .env-sketch .env-label span { background: none; } }
