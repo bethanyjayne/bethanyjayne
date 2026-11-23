@@ -361,13 +361,16 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
   // Time everything from when the leaf actually starts moving: the first frame
   // of the turn can take a moment to draw, and the page must not be cleared or
   // left before it has turned.
+  let started = false;
   leaf.addEventListener('animationstart', (event) => {
-    if (!event.animationName.startsWith('leaf-')) return;
+    // Only the leaf's own turn counts (its faces' animations bubble up here too).
+    if (started || event.target !== leaf || !event.animationName.startsWith('leaf-')) return;
+    started = true;
     // Belt and braces: once the page stands upright on the spine, remove its
     // content entirely so nothing can ever show through back to front.
     window.setTimeout(() => { front.replaceChildren(); front.style.opacity = '0'; }, 345);
     window.setTimeout(finish, 950);
-  }, { once: true });
+  });
   window.setTimeout(finish, 2500);
 
   requestAnimationFrame(() => requestAnimationFrame(() => {
