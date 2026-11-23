@@ -82,11 +82,22 @@
       let lastY = window.scrollY;
       let ticking = false;
       const set = (hide) => trigger.classList.toggle('is-tucked', hide);
+      // Step aside while the 'Previous' / 'Next' page links pass underneath.
+      const coversPageLink = () => {
+        const t = trigger.getBoundingClientRect();
+        const top = t.top - 24;
+        const bottom = t.bottom + 24;
+        return [...document.querySelectorAll('.page-turn')].some((link) => {
+          const r = link.getBoundingClientRect();
+          return r.width && r.right > t.left && r.left < t.right && r.bottom > top && r.top < bottom;
+        });
+      };
       const update = () => {
         ticking = false;
         const y = window.scrollY;
         const nearEnd = y + window.innerHeight >= document.documentElement.scrollHeight - 80;
-        if (!phone.matches || y < 120 || nearEnd || trigger.matches(':focus-visible')) set(false);
+        if (phone.matches && coversPageLink()) set(true);
+        else if (!phone.matches || y < 120 || nearEnd || trigger.matches(':focus-visible')) set(false);
         else if (y > lastY + 6) set(true);
         else if (y < lastY - 6) set(false);
         if (Math.abs(y - lastY) > 6) lastY = y;
@@ -96,6 +107,8 @@
       }, { passive: true });
       trigger.addEventListener('focus', () => set(false));
       if (phone.addEventListener) phone.addEventListener('change', update);
+      window.addEventListener('resize', update, { passive: true });
+      update();
     })();
 
     const dialog = document.createElement('dialog');
@@ -105,28 +118,32 @@
     dialog.setAttribute('aria-describedby', 'bj-accessibility-intro');
     dialog.innerHTML = `
       <div class="a11y-sheet">
+        <div class="a11y-top">
         <div class="a11y-head">
           <div>
             <p class="a11y-kicker">For every reader</p>
             <h2 id="bj-accessibility-title" tabindex="-1">Accessibility settings</h2>
           </div>
-          <button type="button" class="a11y-close" aria-label="Close accessibility settings"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="a11y-close" aria-label="Close accessibility settings"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 3l10 10M13 3 3 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
         </div>
-        <p class="a11y-intro" id="bj-accessibility-intro">Make the book easier to read and use. Changes apply straight away.</p>
-        <fieldset class="a11y-list">
-          <legend class="visually-hidden">Reading preferences</legend>
-          ${rows.map(([key, id, label, description]) => `
-          <label class="a11y-row" for="a11y-${id}">
-            <span class="a11y-row__copy">
-              <span class="a11y-row__title" id="a11y-${id}-label">${label}</span>
-              <span class="a11y-row__description" id="a11y-${id}-description"${key === 'reduceMotion' ? ' data-motion-description' : ''}>${description}</span>
-            </span>
-            <span class="a11y-row__control"><input id="a11y-${id}" class="a11y-switch" type="checkbox" role="switch" data-a11y-setting="${key}" aria-labelledby="a11y-${id}-label" aria-describedby="a11y-${id}-description"><span class="a11y-switch__state" aria-hidden="true">Off</span></span>
-          </label>`).join('')}
-        </fieldset>
-        <p class="a11y-status" role="status" aria-live="polite" aria-atomic="true" data-a11y-status></p>
-        <div class="a11y-actions">
-          <button type="button" class="a11y-reset">Reset</button>
+        <p class="a11y-intro" id="bj-accessibility-intro">Make the book easier to read and use. Changes apply straight away and are remembered on this device.</p>
+        </div>
+        <div class="a11y-body">
+          <fieldset class="a11y-list">
+            <legend class="visually-hidden">Reading preferences</legend>
+            ${rows.map(([key, id, label, description]) => `
+            <label class="a11y-row" for="a11y-${id}">
+              <span class="a11y-row__copy">
+                <span class="a11y-row__title" id="a11y-${id}-label">${label}</span>
+                <span class="a11y-row__description" id="a11y-${id}-description"${key === 'reduceMotion' ? ' data-motion-description' : ''}>${description}</span>
+              </span>
+              <span class="a11y-row__control"><input id="a11y-${id}" class="a11y-switch" type="checkbox" role="switch" data-a11y-setting="${key}" aria-labelledby="a11y-${id}-label" aria-describedby="a11y-${id}-description"><span class="a11y-switch__state" aria-hidden="true">Off</span></span>
+            </label>`).join('')}
+          </fieldset>
+        </div>
+        <div class="a11y-foot">
+          <p class="a11y-status" role="status" aria-live="polite" aria-atomic="true" data-a11y-status></p>
+          <button type="button" class="a11y-reset">Reset all</button>
           <button type="button" class="a11y-done">Done</button>
         </div>
       </div>`;
@@ -164,7 +181,7 @@
       } catch (error) {
         // Storage can be blocked (private mode); the choice still applies now.
       }
-      announce(saved ? 'Saved on this device.' : 'Applied. This browser could not save it for next time.');
+      announce(saved ? 'Saved' : 'Applied for this visit');
       applySettings();
       syncControls();
     };
@@ -176,7 +193,7 @@
       status.textContent = '';
       root.classList.add('a11y-panel-open');
       dialog.showModal();
-      dialog.querySelector('.a11y-sheet').scrollTop = 0;
+      dialog.querySelector('.a11y-body').scrollTop = 0;
       window.requestAnimationFrame(() => title.focus({ preventScroll: true }));
     };
     const closeDialog = () => { if (dialog.open) dialog.close(); };
@@ -195,7 +212,7 @@
       try { window.localStorage.removeItem(STORAGE_KEY); } catch (error) { /* ignore */ }
       applySettings();
       syncControls();
-      announce('Settings reset.');
+      announce('All settings reset');
     });
     dialog.querySelector('.a11y-close').addEventListener('click', closeDialog);
     dialog.querySelector('.a11y-done').addEventListener('click', closeDialog);
