@@ -217,7 +217,9 @@ function turnPage(href) {
   const go = () => { window.location.href = target.href; };
 
   if (turnPage.busy) return;
-  if (!pages || from < 0 || to < 0 || from === to || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { go(); return; }
+  // No turning when the visitor asks for less motion (device setting or the accessibility panel).
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-reduce-motion');
+  if (!pages || from < 0 || to < 0 || from === to || still) { go(); return; }
   turnPage.busy = true;
   // Draw the next page first (or give up after a moment and turn onto blank paper).
   const giveUp = new Promise((resolve) => { window.setTimeout(resolve, 700, null); });

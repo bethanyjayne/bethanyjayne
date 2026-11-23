@@ -1,0 +1,160 @@
+/* ============================================================
+   Accessibility settings (see accessibility.js).
+   The button is a round bookplate in Bethany's purple; the
+   panel is set like a page of the book. Each setting is a class
+   on <html>, so it applies before the page is first drawn.
+   Bethany's paintings and lettering are never changed.
+   ============================================================ */
+
+/* Bethany's favourite purple, used sparingly: the button, the switches and Done */
+:root { --a11y-plum: #6b3f9e; --a11y-plum-deep: #552f80; --a11y-plum-tint: rgba(107, 63, 158, .3); }
+
+/* ---------- the button ---------- */
+.a11y-trigger { position: fixed; z-index: 950; right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom)); display: grid; place-items: center; width: 3.25rem; height: 3.25rem; padding: 0; border: 1.5px solid var(--a11y-plum); border-radius: 50%; color: var(--a11y-plum); background: var(--paper, #fcf7ee); box-shadow: inset 0 0 0 3px var(--paper, #fcf7ee), inset 0 0 0 4px var(--a11y-plum-tint), 0 6px 18px -6px rgba(5, 12, 40, .5); cursor: pointer; transition: transform .2s ease, opacity .2s ease, box-shadow .2s ease, color .2s ease; -webkit-tap-highlight-color: transparent; }
+.a11y-trigger__icon { width: 1.5rem; height: 1.5rem; }
+@media (hover: hover) {
+  .a11y-trigger:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 3px var(--paper, #fcf7ee), inset 0 0 0 4px var(--a11y-plum-tint), 0 10px 22px -6px rgba(5, 12, 40, .55); }
+}
+.a11y-trigger:active { transform: scale(.96); }
+.a11y-trigger:focus-visible { outline: 3px solid var(--pip, #e2852a); outline-offset: 3px; }
+.a11y-trigger.is-tucked { opacity: 0; transform: translateY(1rem) scale(.92); pointer-events: none; }
+html.a11y-panel-open .a11y-trigger { visibility: hidden; }
+
+/* phones: sit just above the chapter tab bar */
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .a11y-trigger { right: max(.9rem, env(safe-area-inset-right)); bottom: calc(4.4rem + env(safe-area-inset-bottom) + .8rem); width: 3rem; height: 3rem; }
+  .a11y-trigger__icon { width: 1.4rem; height: 1.4rem; }
+}
+@media (max-height: 540px) and (orientation: landscape) {
+  .a11y-trigger { bottom: calc(3.3rem + env(safe-area-inset-bottom) + .6rem); }
+}
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  @media (max-width: 900px) { .a11y-trigger { bottom: calc(4.4rem + max(env(safe-area-inset-bottom), .4rem) + .8rem); } }
+}
+@media print { .a11y-trigger, .a11y-dialog { display: none !important; } }
+
+/* ---------- the panel: a page from the book ---------- */
+.a11y-dialog { width: min(33rem, calc(100% - 2rem)); max-width: none; max-height: min(44rem, calc(100dvh - 2rem)); margin: auto; padding: 0; border: 0; border-radius: 4px 8px 8px 4px; color: var(--ink, #1f2340); background: var(--paper, #fcf7ee); box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 28px 64px -16px rgba(5, 12, 40, .55), 0 2px 6px rgba(5, 12, 40, .12); font-family: var(--serif); overflow: hidden; }
+.a11y-dialog[open] { display: flex; animation: a11y-open .24s cubic-bezier(.2, .8, .2, 1); }
+.a11y-dialog::backdrop { background: rgba(11, 26, 72, .55); }
+@keyframes a11y-open { from { opacity: 0; transform: translateY(.6rem); } }
+/* the page: a faint shadow at the spine, fixed head and foot, settings scroll between */
+.a11y-sheet { display: flex; flex: 1; flex-direction: column; min-height: 0; background: linear-gradient(90deg, rgba(70, 50, 25, .06), transparent 3.5%), var(--paper, #fcf7ee); }
+.a11y-top { flex: none; padding: 1.6rem 2rem 1rem; border-bottom: 1px solid var(--rule); }
+.a11y-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.a11y-kicker { margin: 0 0 .35rem; color: var(--a11y-plum); font-size: .95rem; font-variant-caps: all-small-caps; letter-spacing: .16em; line-height: 1; }
+.a11y-head h2 { margin: 0; font-size: 2rem; font-weight: 400; font-style: italic; line-height: 1.1; }
+.a11y-head h2:focus { outline: none; }
+.a11y-head h2:focus-visible { outline: 2px solid var(--pip, #e2852a); outline-offset: 4px; }
+.a11y-close { flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; margin: -.25rem -.5rem 0 0; padding: 0; border: 0; border-radius: 50%; color: var(--ink-soft, #3f4260); background: transparent; cursor: pointer; transition: background-color .15s ease, color .15s ease; }
+.a11y-close svg { width: 1.1rem; height: 1.1rem; }
+.a11y-close:hover { color: var(--ink, #1f2340); background: rgba(31, 35, 64, .07); }
+.a11y-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 2rem; }
+.a11y-intro { margin: .55rem 0 0; color: var(--ink-soft, #3f4260); font-size: 1.1rem; font-style: italic; line-height: 1.4; }
+
+.a11y-list { margin: 0; padding: 0; border: 0; }
+.a11y-row:last-child { border-bottom: 0; }
+.a11y-row { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: .78rem 0; border-bottom: 1px solid var(--rule); cursor: pointer; }
+.a11y-row::before { content: ''; position: absolute; z-index: 0; inset: 1px -.6rem; border-radius: 4px; background: rgba(31, 35, 64, .04); opacity: 0; transition: opacity .15s ease; pointer-events: none; }
+@media (hover: hover) { .a11y-row:hover::before { opacity: 1; } }
+.a11y-row > * { position: relative; z-index: 1; }
+.a11y-row__copy { display: grid; gap: .15rem; min-width: 0; }
+.a11y-row__title { font-size: 1.2rem; line-height: 1.25; }
+.a11y-row__description { color: var(--muted, #6f6a78); font-size: .98rem; line-height: 1.35; }
+.a11y-system-note { color: var(--a11y-plum); font-style: italic; }
+.a11y-row__control { display: flex; align-items: center; gap: .6rem; flex: none; }
+.a11y-switch__state { min-width: 1.6rem; color: var(--muted, #6f6a78); font-size: .95rem; font-variant-caps: all-small-caps; letter-spacing: .1em; line-height: 1; text-align: right; }
+.a11y-switch:checked + .a11y-switch__state { color: var(--ink, #1f2340); }
+.a11y-row__control { flex-direction: row-reverse; }
+
+/* the switch */
+.a11y-switch { position: relative; flex: none; width: 2.85rem; height: 1.6rem; margin: 0; border: 1.5px solid rgba(31, 35, 64, .45); border-radius: 999px; background: var(--mat, #f4ecdf); cursor: pointer; appearance: none; -webkit-appearance: none; transition: background-color .18s ease, border-color .18s ease; }
+.a11y-switch::before { content: ''; position: absolute; top: 50%; left: .17rem; width: 1.06rem; height: 1.06rem; border-radius: 50%; background: var(--ink-soft, #3f4260); box-shadow: 0 1px 2px rgba(0, 0, 0, .2); transform: translateY(-50%); transition: transform .18s ease, background-color .18s ease; }
+.a11y-switch:checked { border-color: var(--a11y-plum); background: var(--a11y-plum); }
+.a11y-switch:checked::before { background: #fff; transform: translate(1.22rem, -50%); }
+.a11y-switch:focus-visible { outline: 3px solid var(--pip, #e2852a); outline-offset: 3px; }
+.a11y-switch:disabled { cursor: not-allowed; opacity: .55; }
+.a11y-row:has(.a11y-switch:disabled) { cursor: default; }
+.a11y-row:has(.a11y-switch:disabled)::before { display: none; }
+
+.a11y-foot { flex: none; display: flex; align-items: center; gap: 1rem; padding: .9rem 2rem 1.2rem; border-top: 1px solid var(--rule); }
+.a11y-status { flex: 1; min-width: 0; margin: 0; color: var(--muted, #6f6a78); font-size: 1rem; font-style: italic; line-height: 1.3; text-align: right; }
+.a11y-reset, .a11y-done { flex: none; min-height: 2.75rem; font: inherit; font-size: 1.1rem; cursor: pointer; }
+.a11y-reset { order: -1; padding: .4rem 0; border: 0; color: var(--ink-soft, #3f4260); background: none; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: .3em; }
+.a11y-reset:hover { color: var(--ink, #1f2340); text-decoration-color: currentColor; }
+.a11y-done { padding: .45rem 1.9rem .55rem; border: 1px solid var(--a11y-plum); color: #fff; background: var(--a11y-plum); transition: background-color .15s ease; }
+.a11y-done:hover { border-color: var(--a11y-plum-deep); background: var(--a11y-plum-deep); }
+.a11y-reset:focus-visible, .a11y-done:focus-visible, .a11y-close:focus-visible { outline: 3px solid var(--pip, #e2852a); outline-offset: 3px; }
+
+/* phones: the panel rises from the bottom as a sheet */
+@media (max-width: 600px) {
+  .a11y-dialog { width: 100%; max-height: calc(100dvh - 2.5rem); margin: auto 0 0; border-radius: 16px 16px 0 0; }
+  .a11y-dialog[open] { animation-name: a11y-rise; animation-duration: .3s; }
+  .a11y-sheet { background: var(--paper, #fcf7ee); }
+  .a11y-sheet::before { content: ''; display: block; width: 2.5rem; height: 4px; margin: .6rem auto 0; border-radius: 2px; background: rgba(31, 35, 64, .18); }
+  .a11y-top { padding: .9rem max(1.25rem, env(safe-area-inset-left)) .9rem; }
+  .a11y-head h2 { font-size: 1.75rem; }
+  .a11y-body { padding: 0 max(1.25rem, env(safe-area-inset-left)); }
+  .a11y-row { gap: 1rem; }
+  .a11y-foot { padding: .8rem max(1.25rem, env(safe-area-inset-left)) calc(.9rem + env(safe-area-inset-bottom)); }
+  .a11y-done { padding-inline: 1.5rem; }
+  @keyframes a11y-rise { from { transform: translateY(100%); } }
+}
+
+/* ============================================================
+   The settings themselves
+   ============================================================ */
+
+/* Larger text: every size on the site is in rem, so the whole book scales */
+html.a11y-large-text { font-size: 118.75%; }
+
+/* Easy-reading font: a plain, open sans-serif with a little more air */
+html.a11y-reading-font { --serif: 'Atkinson Hyperlegible', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+html.a11y-reading-font body { font-variant-numeric: normal; letter-spacing: .01em; word-spacing: .06em; }
+html.a11y-reading-font body :is(p, li, dd, label, .page-hero > p, .note, .a11y-intro, .a11y-row__description, .a11y-status) { font-style: normal; line-height: 1.65; }
+html.a11y-reading-font body :is(h1, h2, h3) { line-height: 1.2; }
+/* small capitals are faked in a font without them, so set those words in ordinary capitals */
+html.a11y-reading-font body *, html.a11y-reading-font body *::before { font-variant-caps: normal !important; }
+html.a11y-reading-font body :is(.eyebrow, .env-label, .a11y-kicker, .a11y-switch__state, .work-label)::before, html.a11y-reading-font body :is(.eyebrow, .env-label, .a11y-kicker, .a11y-switch__state) { text-transform: uppercase; letter-spacing: .08em; }
+
+/* Higher contrast: darker ink, firmer rules, solid labels */
+html.a11y-high-contrast { --ink: #0b0e26; --ink-soft: #0b0e26; --muted: #2a2d45; --rule: rgba(11, 14, 38, .55); }
+html.a11y-high-contrast body { --ink: #0b0e26; --ink-soft: #0b0e26; --muted: #2a2d45; --rule: rgba(11, 14, 38, .55); }
+html.a11y-high-contrast .env-label span { color: #fff; background: #0b0e26; text-shadow: none; }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  html.a11y-high-contrast .env-label { color: #fff; background: #0b0e26; }
+  html.a11y-high-contrast .env-label span { background: none; }
+}
+html.a11y-high-contrast .env-label span::before, html.a11y-high-contrast .env-label span::after { opacity: 1; }
+html.a11y-high-contrast .cover--art .cover-open { border-color: #fff; color: #fff; background: #0b0e26; backdrop-filter: none; }
+html.a11y-high-contrast .cover-hint { color: #fff; text-shadow: 0 1px 3px #000; }
+html.a11y-high-contrast .page-num, html.a11y-high-contrast .tab-bar a { color: var(--ink); }
+html.a11y-high-contrast .contact-form :is(input, textarea) { border-bottom-color: var(--ink); }
+html.a11y-high-contrast :focus-visible { outline: 3px solid #0b0e26 !important; outline-offset: 3px; box-shadow: 0 0 0 6px #fff; }
+html.a11y-high-contrast .a11y-switch { border-color: var(--ink); }
+html.a11y-high-contrast .a11y-switch:not(:checked)::before { background: var(--ink); }
+html.a11y-high-contrast .a11y-trigger { border-color: #0b0e26; color: #0b0e26; background: #fff; box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 4px #0b0e26, 0 0 0 2px #fff; }
+
+/* Underline links: every text link gets a clear line */
+html.a11y-underline-links body :is(main, .site-header, .site-footer, .missing-contents, dialog) a:not(.button):not(.cover):not(.page-turn):not(.brand):not(.cover-tabs a),
+html.a11y-underline-links .nav a, html.a11y-underline-links .footer-contents a,
+html.a11y-underline-links .contents-list a, html.a11y-underline-links .cast-index a { text-decoration-line: underline !important; text-decoration-color: currentColor !important; text-decoration-thickness: max(1px, .08em) !important; text-underline-offset: .22em !important; }
+html.a11y-underline-links .cast-index a { border-bottom: 0; }
+
+/* Reduce motion: pages change at once, nothing hops, sweeps or drifts.
+   The turning leaf is hidden and its animation ends straight away, so the
+   next chapter loads immediately. */
+html.a11y-reduce-motion { scroll-behavior: auto !important; }
+html.a11y-reduce-motion *, html.a11y-reduce-motion *::before, html.a11y-reduce-motion *::after { animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
+html.a11y-reduce-motion .turn-stage { visibility: hidden; }
+html.a11y-reduce-motion .reveal { opacity: 1; }
+html.a11y-reduce-motion .cover-beam::after { display: none; }
+html.a11y-reduce-motion .cover-beam::before { opacity: .8; }
+
+/* Plain backgrounds: the painted scenery behind the book gives way to the
+   chapter's own solid colour; translucent labels become solid */
+html.a11y-simplify-backgrounds body::after, html.a11y-simplify-backgrounds body::before { background: none !important; }
+html.a11y-simplify-backgrounds .env-label span { background: var(--cover-deep, #0b1a48); }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) { html.a11y-simplify-backgrounds .env-label span { background: none; } }
+html.a11y-simplify-backgrounds .cover--art .cover-open { background: var(--cover-deep, #0b1a48); backdrop-filter: none; }
+html.a11y-simplify-backgrounds :is(.plate-viewer, .a11y-dialog)::backdrop { background: rgba(11, 26, 72, .92); backdrop-filter: none; }
