@@ -1056,3 +1056,15 @@ html.is-turned .reveal { opacity: 1; transition: none; }
 @media (min-width: 2300px) and (min-height: 1200px) {
   html { font-size: 112.5%; }
 }
+
+/* ============================================================
+   One book: every chapter is a page of the same book, so the
+   binding and the paper are the same throughout (the colours of
+   the front cover). Only the world around the book changes.
+   ============================================================ */
+body[class*='env-'], .turn-dest[class*='env-'], .turn-world[class*='env-'] { --cover: #123b6b; --cover-deep: #0c2a4f; --paper: #fbf8f1; --paper-edge: #f1e6d3; --mat: #f1ece1; }
+/* While the page turns, the next chapter's world fades in behind the book. */
+.turn-world { position: fixed; z-index: -1; inset: 0; background: var(--env-bg); opacity: 0; transition: opacity .7s ease; pointer-events: none; }
+.turn-world.is-showing { opacity: 1; }
+/* the world's painting sits at the very back, under the fading next one */
+body::after { z-index: -2; }
