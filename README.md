@@ -4,14 +4,18 @@ A static site for Bethany Jayne, children's book illustrator, presented as a pic
 
 ## Pages
 
-- `index.html`: the front cover (lighthouse painting) with chapter tabs
-- `about.html`: Chapter One, About (The Meadow)
-- `otters.html`: Chapter Two, The Otters (The River)
-- `pip.html`: Chapter Three, Pip (The Forest)
-- `russel.html`: Chapter Four, Russel's Adventure (still being drawn)
-- `contact.html`: Chapter Five, Contact (The Last Page)
-- `childrens-books.html`: forwards old links to The Otters
-- `404.html`: shown for any missing page
+Each chapter lives in its own folder, so addresses are clean (`/otters/` rather than `/otters.html`):
+
+- `index.html`: the front cover (lighthouse painting) with chapter tabs, at `/`
+- `about/index.html`: Chapter One, About (The Meadow), at `/about/`
+- `otters/index.html`: Chapter Two, The Otters (The River), at `/otters/`
+- `pip/index.html`: Chapter Three, Pip (The Forest), at `/pip/`
+- `russel/index.html`: Chapter Four, Russel's Adventure (still being drawn), at `/russel/`
+- `contact/index.html`: Chapter Five, Contact (The Last Page), at `/contact/`
+- `404.html`: the missing-page spread, shown by GitHub Pages for any address that doesn't exist
+- `about.html`, `otters.html`, `pip.html`, `russel.html`, `contact.html`, `childrens-books.html`: tiny forwarding pages so old links and bookmarks still land on the right chapter
+
+Because pages sit in folders, every link and asset path starts with `/` (for example `/assets/...`, `/styles.css`), so the same paths work from any page and from the 404 page.
 
 ## Files
 
