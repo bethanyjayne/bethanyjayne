@@ -195,7 +195,7 @@ function turnPage(href) {
   turnPage.busy = true;
 
   const backward = to < from;
-  const single = Boolean(cover) || window.matchMedia('(max-width: 760px)').matches;
+  const single = Boolean(cover) || window.matchMedia('(max-width: 900px), (max-height: 540px) and (orientation: landscape)').matches;
   const rect = pages.getBoundingClientRect();
   const top = Math.max(rect.top, 0);
   const height = Math.min(rect.bottom, window.innerHeight) - top;
