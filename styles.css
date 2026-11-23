@@ -1089,3 +1089,15 @@ body::after { z-index: -2; }
   .turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-640.webp'); }
   .turn-dest.russel-page .page-hero::after { font-size: 1.3rem; }
 }
+/* Running heads: the name sits on the left page and the contents on the right
+   page, lined up with the chapter text below and never crossing the spine. */
+@media (min-width: 901px) {
+  .nav { justify-self: start; justify-content: space-between; width: 100%; max-width: 34rem; gap: .7rem; font-size: 1.04rem; }
+}
+/* Where the contents would not fit on the right page, fold them into a menu. */
+@media (min-width: 901px) and (max-width: 1220px) {
+  .site-header { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); }
+  .nav-toggle { display: block; justify-self: start; }
+  .nav { position: absolute; z-index: 10; top: 100%; left: calc(50% + var(--gutter) / 2 - 1.2rem); right: auto; display: none; width: auto; min-width: 12rem; padding: .8rem 1.2rem; border: 1px solid var(--rule); background: var(--paper); box-shadow: 0 10px 24px rgba(42, 38, 34, .12); }
+  .nav.is-open { display: grid; gap: .3rem; }
+}
