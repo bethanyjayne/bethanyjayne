@@ -6,7 +6,8 @@ document.documentElement.classList.add('js');
     const turn = sessionStorage.getItem('bj-page-turn');
     if (!turn) return;
     sessionStorage.removeItem('bj-page-turn');
-    document.documentElement.classList.add('is-arriving');
+    // 'shown': the page was already drawn under the turning leaf, so it appears at once.
+    document.documentElement.classList.add(turn === 'shown' ? 'is-turned' : 'is-arriving');
   } catch (error) {
     // Storage can be unavailable (private mode); the page simply appears.
   }

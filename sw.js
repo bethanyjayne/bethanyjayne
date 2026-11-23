@@ -1,9 +1,9 @@
 // Offline support: the pages and their artwork are kept on the device so the
 // book opens without a connection. Pages are fetched fresh when online and fall
 // back to the saved copy offline; images are served from the saved copy first.
-const VERSION = 'bj-v8';
+const VERSION = 'bj-v10';
 const PAGES = ['/', '/about/', '/otters/', '/pip/', '/russel/', '/contact/', '/404.html'];
-const CORE = [...PAGES, '/styles.css', '/fonts.css', '/assets/fonts/eb-garamond-normal-latin.woff2', '/assets/fonts/eb-garamond-italic-latin.woff2', '/website-overrides.css', '/site.js', '/page-turn.js', '/manifest.webmanifest',
+const CORE = [...PAGES, '/styles.css', '/fonts.css', '/assets/fonts/eb-garamond-normal-latin.woff2', '/assets/fonts/eb-garamond-italic-latin.woff2', '/website-overrides.css', '/accessibility.css', '/site.js', '/page-turn.js', '/accessibility.js', '/manifest.webmanifest',
   '/assets/art/cover-640.webp', '/assets/backdrops/sea.jpg', '/assets/icons/icon-192.png', '/assets/icons/brand-96.webp'];
 
 self.addEventListener('install', (event) => {
