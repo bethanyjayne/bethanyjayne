@@ -792,3 +792,19 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
   .page-hero > .eyebrow { margin-top: 1rem; }
   .page-hero > h1 { font-size: 2.2rem; }
 }
+
+/* ============================================================
+   Installed web app (added to a home screen)
+   ============================================================ */
+html { -webkit-tap-highlight-color: transparent; }
+body { overscroll-behavior-y: none; }
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  /* clear the notch / status bar and the home indicator */
+  body { padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+  .site-header { top: env(safe-area-inset-top); }
+  .tab-bar { padding-bottom: max(env(safe-area-inset-bottom), .4rem); }
+  .cover-wrap { min-height: calc(100svh - env(safe-area-inset-top) - 4.4rem); align-content: center; }
+  /* app-like: chrome text isn't selectable, artwork can't be dragged out */
+  .tab-bar, .site-header, .page-turn, .cover-tabs, .env-label { -webkit-user-select: none; user-select: none; }
+  img { -webkit-user-drag: none; -webkit-touch-callout: none; }
+}
