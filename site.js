@@ -246,6 +246,7 @@ function nextPageLayer(href) {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const layer = document.createElement('div');
     layer.className = `turn-dest ${doc.body.className}`;
+    layer.dataset.page = doc.body.className;
     doc.body.querySelectorAll('script, dialog, .skip-link').forEach((el) => el.remove());
     doc.body.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
     doc.body.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
@@ -341,6 +342,21 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     stage.append(place(dest, 0, 0), under, leaf);
   } else if (dest) {
     stage.classList.add('has-dest');
+    // The book stays the same book: only the world around it changes, so the
+    // next chapter's painting fades in behind the book while the page turns,
+    // and the chapter's name in the label above the book fades across too.
+    const world = document.createElement('div');
+    world.className = `turn-world ${dest.dataset.page}`;
+    world.setAttribute('aria-hidden', 'true');
+    document.body.prepend(world);
+    const label = document.querySelector('.env-label span');
+    const nextLabel = dest.querySelector('.env-label span');
+    if (label && nextLabel && label.animate) {
+      label.dataset.text = label.textContent;
+      label.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' }).finished
+        .then(() => { label.textContent = nextLabel.textContent; label.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: 'forwards' }); })
+        .catch(() => {});
+    }
     under.appendChild(place(dest, leafLeft, top));
     if (!single) back.appendChild(place(dest.cloneNode(true), backward ? leafLeft + half : leafLeft - half, top));
     stage.append(under, leaf);
@@ -379,14 +395,19 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     // on backface-visibility, so the page can't show through onto the other side.
     stage.classList.toggle('is-backward', backward);
     stage.classList.add('is-turning');
+    document.querySelectorAll('.turn-world').forEach((world) => world.classList.add('is-showing'));
   }));
 }
 
 // Coming back with the browser's Back button can restore a page mid-turn.
 window.addEventListener('pageshow', (event) => {
   if (!event.persisted) return;
-  document.querySelectorAll('.turn-stage').forEach((stage) => stage.remove());
+  document.querySelectorAll('.turn-stage, .turn-world').forEach((el) => el.remove());
   document.documentElement.classList.remove('is-arriving', 'is-turned');
+  document.querySelectorAll('.env-label span[data-text]').forEach((label) => {
+    label.getAnimations().forEach((animation) => animation.cancel());
+    label.textContent = label.dataset.text;
+  });
   turnPage.busy = false;
 });
 
