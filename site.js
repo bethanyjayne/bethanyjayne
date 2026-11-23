@@ -146,7 +146,29 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
     number.textContent = `Plate ${roman(current + 1)} of ${roman(plates.length)}`;
     title.textContent = card.querySelector('.work-label strong')?.textContent || '';
     meta.textContent = card.querySelector('.work-label span')?.textContent || '';
+    // Load the plates either side so stepping to them is instant.
+    [current - 1, current + 1].forEach((i) => {
+      const neighbour = plates[(i + plates.length) % plates.length].querySelector('img');
+      const ahead = new Image();
+      ahead.src = neighbour.dataset.full || neighbour.currentSrc || neighbour.src;
+    });
   };
+
+  // Swipe left or right in the viewer to move between plates.
+  let swipeStart = null;
+  viewer.addEventListener('touchstart', (event) => {
+    if (event.touches.length !== 1) { swipeStart = null; return; }
+    swipeStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+  }, { passive: true });
+  viewer.addEventListener('touchend', (event) => {
+    if (!swipeStart) return;
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - swipeStart.x;
+    const dy = touch.clientY - swipeStart.y;
+    swipeStart = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1));
+    else if (dy > 90 && Math.abs(dy) > Math.abs(dx) * 1.5) viewer.close();
+  }, { passive: true });
 
   plates.forEach((card, index) => {
     const source = card.querySelector('img');
