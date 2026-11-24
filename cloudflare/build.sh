@@ -19,7 +19,7 @@ rm -rf "$OUT"
 mkdir -p "$OUT"
 
 # Paths that are not part of the published site.
-SKIP='^(\.github/|cloudflare/|dist/|README\.md$|\.gitignore$|russel/|(about|contact|otters|pip|russel|russell|childrens-books)\.html$)'
+SKIP='^(\.github/|cloudflare/|dist/|README\.md$|\.gitignore$)'
 
 git ls-files -z | grep -zvE "$SKIP" | tar --null -T - -cf - | tar -xf - -C "$OUT"
 cp cloudflare/_headers cloudflare/_redirects "$OUT/"
