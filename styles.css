@@ -1214,3 +1214,14 @@ html:not(.a11y-high-contrast) .cover:hover .cover-open, html:not(.a11y-high-cont
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
   .cover-frame { background-size: 24px, 24px, 24px, 24px; background-position: left 5px top 5px, right 5px top 5px, left 5px bottom 5px, right 5px bottom 5px; }
 }
+
+/* Closed book: the pages sit inside the boards, as on a real hardback, so
+   only a sliver of page edge shows at the fore-edge, with the back board
+   just behind it. Nothing sticks out below the cover. */
+.cover-book::before { inset: 1.8% -1.5% 1.8% 4%; border-radius: 0 4px 4px 0; box-shadow: none; }
+.cover-book::after { content: ''; position: absolute; z-index: -1; inset: .3% -2.3% -.5% 3%; border-radius: 0 10px 10px 0; background: linear-gradient(90deg, #0d2d55, #0f3360 60%, #0b2748); box-shadow: inset -1px 0 0 rgba(255, 255, 255, .08), 0 34px 60px -10px rgba(5, 12, 40, .6); }
+.turn-stage .cover-book::after, .turn-dest .cover-book::after { display: none; }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .cover-book::after { display: none; }
+  .cover { box-shadow: 2px 0 0 -3px #f6efe0, 3px 0 0 -3px #ddd1bb, 4px 0 0 -3px #f6efe0, 5px 0 0 -3px #d3c6ad, 7px 1px 0 -1px #0f3360, 0 24px 40px -8px rgba(5, 12, 40, .6); }
+}
