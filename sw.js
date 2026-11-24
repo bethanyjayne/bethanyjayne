@@ -1,7 +1,7 @@
 // Offline support: the pages and their artwork are kept on the device so the
 // book opens without a connection. Pages are fetched fresh when online and fall
 // back to the saved copy offline; images are served from the saved copy first.
-const VERSION = 'bj-v35';
+const VERSION = 'bj-v36';
 const PAGES = ['/', '/about/', '/otters/', '/pip/', '/russell/', '/contact/', '/404.html'];
 const CORE = [...PAGES, '/styles.css', '/fonts.css', '/assets/fonts/eb-garamond-normal-latin.woff2', '/assets/fonts/eb-garamond-italic-latin.woff2', '/website-overrides.css', '/accessibility.css', '/site.js', '/update.js', '/page-turn.js', '/accessibility.js', '/manifest.webmanifest',
   '/assets/art/cover-640.webp', '/assets/backdrops/sea.jpg', '/assets/icons/icon-192.png', '/assets/icons/brand-96.webp'];
@@ -9,7 +9,7 @@ const CORE = [...PAGES, '/styles.css', '/fonts.css', '/assets/fonts/eb-garamond-
 // The rest of the book's pictures (phone sizes, which every screen can fall
 // back to), saved in the background so every chapter opens offline once the
 // app has been visited, not only the chapters already read.
-const ART = ['otter-ball', 'otter-waving', 'otters-in-love', 'otters-drifting', 'otters-stone', 'otters-wedding', 'otters-floating', 'otter-asleep', 'otter-snack', 'otters-scene', 'pip-scene', 'pip-adhd', 'pip-deforestation', 'russell-cover', 'russell-back-cover', 'russell-exhibition']
+const ART = ['otter-ball', 'otter-waving', 'otters-in-love', 'otters-drifting', 'otters-stone', 'otters-wedding', 'otters-floating', 'otter-asleep', 'otter-snack', 'otters-scene', 'pip-scene', 'pip-adhd-cover', 'pip-deforestation-cover', 'russell-cover', 'russell-back-cover', 'russell-exhibition']
   .map((name) => `/assets/art/${name}-640.webp`)
   .concat(['/assets/art/cat.webp', '/assets/4e4cc5_b89f6ea50577454bb355c0a60e1accde~mv2.jpeg',
     '/assets/backdrops/sea-800.jpg', '/assets/backdrops/meadow-800.jpg', '/assets/backdrops/river-800.jpg', '/assets/backdrops/forest-800.jpg',
