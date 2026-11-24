@@ -1230,7 +1230,7 @@ html:not(.a11y-high-contrast) .cover:hover .cover-open, html:not(.a11y-high-cont
    ============================================================ */
 .env-shore { --env-bg: linear-gradient(rgba(6, 22, 52, .1), rgba(6, 22, 52, .38)), url('./assets/backdrops/sea.jpg') center / cover; --cover: #123b6b; --cover-deep: #0c2a4f; --accent: #7a4f26; }
 html:has(body.env-shore) { background: #123b6b; }
-body.russell-page > .book .page-hero::after, .turn-dest.russell-page .page-hero::after { content: ''; display: block; color: inherit; font-size: inherit; font-style: inherit; background: #b9d6ee url('./assets/art/russell-cover-2560.webp') 96% 100% / auto 150% no-repeat; }
+body.russell-page > .book .page-hero::after, .turn-dest.russell-page .page-hero::after { content: ''; display: block; color: inherit; font-size: inherit; font-style: inherit; background: #b9d6ee url('./assets/art/russell-cover-2560.webp') 100% 100% / auto 160% no-repeat; }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
 }
 .character-art--wide { width: 100%; }
