@@ -10,7 +10,7 @@ Each chapter lives in its own folder, so addresses are clean (`/otters/` rather 
 - `about/index.html`: Chapter One, About (The Meadow), at `/about/`
 - `otters/index.html`: Chapter Two, The Otters (The River), at `/otters/`
 - `pip/index.html`: Chapter Three, Pip (The Forest), at `/pip/`
-- `russell/index.html`: Chapter Four, Russell's Adventure (still being drawn), at `/russell/`
+- `russell/index.html`: Chapter Four, Russell's Adventure (cover, flip-through video and exhibition photo), at `/russell/`
 - `contact/index.html`: Chapter Five, Contact (The Last Page), at `/contact/`
 - `404.html`: the missing-page spread, shown by GitHub Pages for any address that doesn't exist
 - `about.html`, `otters.html`, `pip.html`, `russell.html`, `contact.html`, `childrens-books.html`: tiny forwarding pages so old links and bookmarks still land on the right chapter

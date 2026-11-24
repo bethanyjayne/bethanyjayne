@@ -1228,3 +1228,62 @@ html:not(.a11y-high-contrast) .cover:hover .cover-open, html:not(.a11y-high-cont
 
 /* The email address is long: let it wrap rather than run off a narrow phone. */
 .footer-links a, .contact-item a { overflow-wrap: anywhere; }
+
+/* ============================================================
+   Russell's Adventure: the finished book
+   ============================================================ */
+.env-shore { --env-bg: linear-gradient(rgba(6, 22, 52, .1), rgba(6, 22, 52, .38)), url('./assets/backdrops/sea.jpg') center / cover; --cover: #123b6b; --cover-deep: #0c2a4f; --accent: #7a4f26; }
+html:has(body.env-shore) { background: #123b6b; }
+.russell-page .page-hero::after, .turn-dest.russell-page .page-hero::after { content: ''; display: block; color: inherit; font-size: inherit; font-style: inherit; background: #b9d6ee url('./assets/art/russell-cover-1280.webp') 96% 100% / auto 150% no-repeat; }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .russell-page .page-hero::after, .turn-dest.russell-page .page-hero::after { background-image: url('./assets/art/russell-cover-640.webp'); }
+}
+.character-art--wide { width: 100%; }
+.film-frame { margin: 0; align-self: center; }
+.film-copy > p:first-child::first-letter { all: unset; }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) { .film-frame { margin-top: 1.6rem; } }
+.film-frame video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: .6rem solid #fff; background: #e9e6df; object-fit: cover; box-shadow: 0 2px 4px rgba(31, 35, 64, .14), 0 22px 40px -18px rgba(31, 35, 64, .5), 0 60px 90px -50px rgba(31, 35, 64, .45); }
+.film-frame figcaption { margin-top: 1rem; color: var(--ink-soft); font-size: 1rem; font-style: italic; text-align: center; }
+.show-photo img { aspect-ratio: 3 / 4; object-position: center 30%; }
+.show-photo::after { content: 'Russell\2019s Adventure on show'; }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .film-frame video { border-width: .3rem; }
+}
+
+/* ============================================================
+   Every screen: keep clear of the notch, Dynamic Island,
+   rounded corners and the home indicator. The page is drawn
+   edge to edge (viewport-fit=cover), so these insets apply in
+   Safari as well as the installed app; they are 0 elsewhere.
+   ============================================================ */
+:root { --safe-top: env(safe-area-inset-top, 0px); --safe-right: env(safe-area-inset-right, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); --safe-left: env(safe-area-inset-left, 0px); }
+body { padding-top: var(--safe-top); padding-left: var(--safe-left); padding-right: var(--safe-right); }
+/* a solid strip behind the status bar, so pages never scroll underneath the clock or the Dynamic Island */
+html::before { content: ''; position: fixed; z-index: 1001; top: 0; right: 0; left: 0; height: var(--safe-top); background: var(--cover, #123b6b); pointer-events: none; }
+html:has(body.env-meadow)::before { background: #2c5a26; }
+html:has(body.env-forest)::before { background: #245b3c; }
+html:has(body.env-river)::before { background: #11245e; }
+html:has(body.env-dusk)::before { background: #0e1d4c; }
+html:has(body.env-sketch)::before { background: #5f4b37; }
+html:has(body.env-sea)::before, html:has(body.env-shore)::before { background: #123b6b; }
+.site-header { top: var(--safe-top); }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .tab-bar { padding-left: var(--safe-left); padding-right: var(--safe-right); padding-bottom: max(var(--safe-bottom), .35rem); }
+  body { padding-bottom: calc(4.4rem + max(var(--safe-bottom), .35rem)); }
+  /* the plate viewer fills the screen, so keep its picture and buttons inside the safe area */
+  .plate-viewer { padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left); }
+  .plate-viewer__img { height: calc(62dvh - var(--safe-top) - var(--safe-bottom)); }
+  /* narrow phones: the six chapter tabs share the width evenly and never spill */
+  .tab-bar a { min-width: 0; overflow-wrap: anywhere; }
+}
+@media (max-height: 540px) and (orientation: landscape) {
+  body { padding-bottom: calc(3.3rem + max(var(--safe-bottom), .35rem)); }
+  .section { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .site-header, .page-hero > * { padding-left: 0; }
+}
+@media (max-width: 900px) and (orientation: portrait) {
+  .cover-page .cover-wrap { min-height: calc(100svh - var(--safe-top) - 4.4rem - max(var(--safe-bottom), .35rem) - 3.9rem); }
+}
+@media (max-width: 360px) {
+  .tab-bar a { font-size: .74rem; }
+}
