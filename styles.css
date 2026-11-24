@@ -588,14 +588,14 @@ html:has(body.env-meadow) { background: #4f9a3a; }
 }
 
 /* ============================================================
-   Chapters: About, The Otters, Pip, Russel's Adventure, Contact
+   Chapters: About, The Otters, Pip, Russell's Adventure, Contact
    High-quality artwork for every opener.
    ============================================================ */
 .about-page .page-hero::after { background: url('./assets/art/otter-waving-1280.webp') center / cover no-repeat; }
 .otters-page .page-hero::after { background: url('./assets/art/otters-stone-1280.webp') center / cover no-repeat; }
-.russel-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
+.russell-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
 
-/* Russel's chapter: warm sketchbook paper until the artwork arrives */
+/* Russell's chapter: warm sketchbook paper until the artwork arrives */
 .env-sketch { --env-bg: repeating-linear-gradient(0deg, transparent 0 39px, rgba(90, 70, 40, .07) 39px 40px), linear-gradient(180deg, #e9e1d1, #d5c8b1); --cover: #5f4b37; --cover-deep: #463626; --paper: #fcf8f0; --mat: #f2eadc; --accent: #7a5332; --primary: #6b4a2a; --primary-deep: #523820; }
 .env-sketch .env-label { color: #5f4b37; text-shadow: none; }
 /* Contact: the last page, under the river at dusk */
@@ -621,7 +621,7 @@ main > section + .plates-section { border-top: 0; padding-top: 0; }
   .tab-bar a { font-size: .82rem; padding: .4rem 0; }
   .cover-tabs { flex-wrap: wrap; }
   .cover-tabs a { padding: .55rem .75rem; }
-  .russel-page .page-hero::after { font-size: 1.3rem; }
+  .russell-page .page-hero::after { font-size: 1.3rem; }
 }
 .nav a { white-space: nowrap; }
 .nav { gap: 1.2rem; font-size: 1.04rem; }
@@ -925,7 +925,7 @@ html.is-turned .reveal { opacity: 1; transition: none; }
   .plate-viewer[open] { animation: none; }
   html.is-arriving .book-pages > * { animation: none; }
 }
-/* Russel and the missing page: one pill in the running head, not a pill inside a pill */
+/* Russell and the missing page: one pill in the running head, not a pill inside a pill */
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) { .env-sketch .env-label span { background: none; } }
 /* Opening the cover onto the first page: the inside of the cover fades away
    as it settles, so it never lies over the page that has just appeared. */
@@ -1080,13 +1080,13 @@ body::after { z-index: -2; }
 .turn-dest.otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-1280.webp'); }
 .turn-dest.pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-1280.webp'); }
 .turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-1280.webp'); }
-.turn-dest.russel-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
+.turn-dest.russell-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
   .turn-dest.about-page .page-hero::after { background-image: url('./assets/art/otter-waving-640.webp'); }
   .turn-dest.otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-640.webp'); }
   .turn-dest.pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-640.webp'); }
   .turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-640.webp'); }
-  .turn-dest.russel-page .page-hero::after { font-size: 1.3rem; }
+  .turn-dest.russell-page .page-hero::after { font-size: 1.3rem; }
 }
 /* Running heads: the name sits on the left page and the contents on the right
    page, lined up with the chapter text below and never crossing the spine. */
@@ -1207,7 +1207,7 @@ html.a11y-reduce-motion .cover-book { transform: none; transition: none; }
 .cover-box { border-color: #d9b96f; border-image: linear-gradient(135deg, #f4e3b0, #c19449 30%, #f1dca3 55%, #a8803d 80%, #e9d3a1) 1; box-shadow: 0 0 0 5px rgba(0, 0, 0, .22), inset 0 0 0 1px rgba(0, 0, 0, .25), 0 10px 22px -8px rgba(0, 0, 0, .55); }
 html:not(.a11y-high-contrast) .cover-kicker, html:not(.a11y-high-contrast) .cover-subtitle, html:not(.a11y-high-contrast) .cover-open { color: transparent; background-image: linear-gradient(180deg, #f8e9bd 0%, #e2c27c 45%, #b88d44 55%, #ecd394 100%); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .45)); }
 html:not(.a11y-high-contrast) .cover-open { border-color: rgba(222, 190, 120, .8); }
-html:not(.a11y-high-contrast) .cover:hover .cover-open, html:not(.a11y-high-contrast) .cover:focus-visible .cover-open { background-image: linear-gradient(180deg, #fff6d8 0%, #f0d48e 50%, #fbe9b8 100%); background-color: transparent; color: transparent; }
+html:not(.a11y-high-contrast) .cover:hover .cover-open, html:not(.a11y-high-contrast) .cover:focus-visible .cover-open { background: linear-gradient(180deg, #fff6d8 0%, #f0d48e 50%, #fbe9b8 100%); -webkit-background-clip: text; background-clip: text; color: transparent; border-color: rgba(240, 212, 142, .95); box-shadow: 0 0 14px -2px rgba(240, 205, 120, .35), inset 0 0 10px -2px rgba(240, 205, 120, .25); }
 .cover-open { position: relative; }
 .cover-open::after { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(233, 211, 161, 0); transition: background-color .25s ease; }
 .cover:hover .cover-open::after, .cover:focus-visible .cover-open::after { background: rgba(233, 211, 161, .12); }
@@ -1225,3 +1225,6 @@ html:not(.a11y-high-contrast) .cover:hover .cover-open, html:not(.a11y-high-cont
   .cover-book::after { display: none; }
   .cover { box-shadow: 2px 0 0 -3px #f6efe0, 3px 0 0 -3px #ddd1bb, 4px 0 0 -3px #f6efe0, 5px 0 0 -3px #d3c6ad, 7px 1px 0 -1px #0f3360, 0 24px 40px -8px rgba(5, 12, 40, .6); }
 }
+
+/* The email address is long: let it wrap rather than run off a narrow phone. */
+.footer-links a, .contact-item a { overflow-wrap: anywhere; }
