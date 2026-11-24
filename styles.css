@@ -1140,8 +1140,8 @@ html.js .cover-box .cover-art, html.js .cover-box .cover-beam { transition: opac
 /* The cover's label is a welcome line rather than a chapter name: no pill,
    cream lettering with hairlines either side, her name in italic. */
 @media (min-width: 901px) and (min-height: 541px), (min-width: 901px) and (orientation: portrait) {
-  body.cover-page > .env-label span { padding: 0; color: #f6e7c1; background: none; box-shadow: none; text-shadow: 0 1px 3px rgba(5, 12, 40, .55); }
-  body.cover-page > .env-label em { font-size: 1.3em; font-style: italic; font-variant-caps: normal; letter-spacing: .03em; }
+  body.cover-page > .env-label span, .turn-dest.cover-page > .env-label span { padding: 0; color: #f6e7c1; background: none; box-shadow: none; text-shadow: 0 1px 3px rgba(5, 12, 40, .55); }
+  body.cover-page > .env-label em, .turn-dest.cover-page > .env-label em { font-size: 1.3em; font-style: italic; font-variant-caps: normal; letter-spacing: .03em; }
 }
 
 /* ---------- Design pass (Nov 2026) ---------- */
@@ -1395,4 +1395,19 @@ html.a11y-reduce-motion .edge-tab, html.a11y-reduce-motion .edge-tab__arrow { tr
    centred column of every page after them */
 @media (min-width: 600px) and (max-width: 900px) and (orientation: portrait) {
   .page-hero > :not(.page-num) { margin-left: max(0px, calc((100% - 40rem) / 2)); }
+}
+
+/* Cover to pages and back (cover transition pass) */
+/* Arriving on the cover by closing the book: the cover was already drawn as
+   it swung shut, so its painting is there at once instead of fading in again */
+html.is-turned .cover-box .cover-art, html.is-turned .cover-box .cover-beam { opacity: 1; transition: none; }
+/* Phones: the chapter tabs stay put above every page turn, as they are the
+   same on both pages, so the bottom of the screen never flashes blank */
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  html.is-turning-page .tab-bar { z-index: 1001; }
+}
+/* Closing the book: the back board behind the pages is already there as the
+   cover swings shut, so the finished cover doesn't change shape as it lands */
+@media (min-width: 901px) and (min-height: 541px), (min-width: 901px) and (orientation: portrait) {
+  .turn-stage.is-closing .turn-dest .cover-book::after { display: block; }
 }

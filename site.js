@@ -433,7 +433,11 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     // Fade the inside of the cover itself (fading the whole 3D leaf would flatten it and snap).
     back.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 360, easing: 'ease-in-out', fill: 'forwards' });
     document.querySelectorAll('.turn-world').forEach((world) => world.classList.add('is-showing'));
-    dest.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, delay: 400, easing: 'ease', fill: 'forwards' })
+    // The chapter comes up through the page as it grows, inside the page's
+    // edges, rather than waiting on blank paper for the page to finish.
+    const inset = (r) => `inset(${parseFloat(r.top)}px ${window.innerWidth - parseFloat(r.left) - parseFloat(r.width)}px ${window.innerHeight - parseFloat(r.top) - parseFloat(r.height)}px ${parseFloat(r.left)}px)`;
+    dest.animate([{ clipPath: inset(from) }, { clipPath: inset(to) }], { duration: 480, easing: ease, fill: 'forwards' });
+    dest.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 340, delay: 170, easing: 'ease-out', fill: 'forwards' })
       .finished.then(finish, finish);
   };
   const opening = Boolean(cover && dest);
@@ -536,6 +540,9 @@ function closeBook({ pages, go, dest }) {
   const fill = 'forwards';
   // 1. the page clears to blank paper
   page.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: 'ease', fill }).finished.then(() => {
+    // The blank page now covers the old one: put the old book away, so only
+    // the closing page is left as it shrinks back to the cover.
+    document.querySelectorAll('body > .book, body > .env-label').forEach((el) => { el.style.visibility = 'hidden'; });
     // 2. it shrinks to the size of the cover while the sea comes back around it
     world.classList.add('is-showing');
     dest.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 420, easing: 'ease', fill });
@@ -547,6 +554,8 @@ function closeBook({ pages, go, dest }) {
     // 3. the cover swings shut: its inside shows until it stands upright, then its front
     leaf.style.visibility = '';
     const turn = { duration: 700, fill };
+    // the open book's binding folds away under the cover as it closes
+    page.animate([{ boxShadow: getComputedStyle(page).boxShadow }, { boxShadow: '0 0 0 0 rgba(18, 59, 107, 0), 0 0 0 0 rgba(5, 12, 40, 0)' }], { duration: 560, easing: 'ease-in', fill });
     back.animate([{ opacity: 1 }, { opacity: 1, offset: 0.5 }, { opacity: 0, offset: 0.5 }, { opacity: 0 }], turn);
     front.animate([{ opacity: 0 }, { opacity: 0, offset: 0.5 }, { opacity: 1, offset: 0.5 }, { opacity: 1 }], turn);
     return leaf.animate([
@@ -569,6 +578,7 @@ window.addEventListener('pageshow', (event) => {
   document.querySelectorAll('.cover-tabs, .cover-hint').forEach((el) => el.getAnimations().forEach((animation) => animation.cancel()));
   turnPage.busy = false;
   document.documentElement.classList.remove('is-turning-page');
+  document.querySelectorAll('body > .book, body > .env-label').forEach((el) => { el.style.visibility = ''; });
 });
 
 // Every link to another chapter turns the page.
