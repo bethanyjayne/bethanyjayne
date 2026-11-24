@@ -141,8 +141,18 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
     current = (index + plates.length) % plates.length;
     const card = plates[current];
     const source = card.querySelector('img');
-    image.src = source.dataset.full || source.currentSrc || source.src;
+    // Show the picture already on the page straight away (it is loaded), then
+    // swap in the large one once it has arrived, so the viewer never shows the
+    // previous plate under the new caption on a slow connection.
+    const shown = source.currentSrc || source.src;
+    const full = source.dataset.full || shown;
+    image.src = shown;
     image.alt = source.alt;
+    if (full !== shown) {
+      const large = new Image();
+      large.onload = () => { if (plates[current] === card) image.src = full; };
+      large.src = full;
+    }
     number.textContent = `Plate ${roman(current + 1)} of ${roman(plates.length)}`;
     title.textContent = card.querySelector('.work-label strong')?.textContent || '';
     meta.textContent = card.querySelector('.work-label span')?.textContent || '';
