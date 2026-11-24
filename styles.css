@@ -1188,3 +1188,29 @@ html.js .cover-box .cover-art, html.js .cover-box .cover-beam { transition: opac
 }
 @media (prefers-reduced-motion: reduce) { .cover-book, .work-card .plate-frame img.is-tilting { transition: none; } }
 html.a11y-reduce-motion .cover-book { transform: none; transition: none; }
+
+/* ---------- Cover, bookbound finish (Nov 2026) ----------
+   Gold-foil lettering pressed into the cloth, gilt corner ornaments on the
+   frame, a gilt mount for the painting, raised bands on the spine and a
+   bevelled board edge. */
+@media (min-width: 901px) and (min-height: 541px), (min-width: 901px) and (orientation: portrait) {
+  .cover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 -3px 4px -1px rgba(0, 0, 0, .3), inset -3px 0 4px -2px rgba(0, 0, 0, .28), inset 0 0 0 1px rgba(255, 255, 255, .06), 0 2px 3px rgba(0, 0, 0, .25); }
+}
+.cover::before { content: ''; position: absolute; z-index: 1; left: 1.2%; width: 3.4%; top: 6%; bottom: 6%; pointer-events: none; background:
+  linear-gradient(180deg, transparent 0 4%, rgba(222, 190, 120, .7) 4% calc(4% + 1px), transparent calc(4% + 1px) calc(4% + 4px), rgba(222, 190, 120, .7) calc(4% + 4px) calc(4% + 5px), transparent calc(4% + 5px) calc(96% - 5px), rgba(222, 190, 120, .7) calc(96% - 5px) calc(96% - 4px), transparent calc(96% - 4px) calc(96% - 1px), rgba(222, 190, 120, .7) calc(96% - 1px) 96%, transparent 96%); }
+.cover-frame { border-color: rgba(222, 190, 120, .75); outline-color: rgba(222, 190, 120, .32);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23dcbc78' stroke-width='1.2'%3E%3Cpath d='M2 22V2h20'/%3E%3Cpath d='M7 14c0-4 3-7 7-7'/%3E%3C/g%3E%3Ccircle cx='7' cy='7' r='2' fill='%23dcbc78'/%3E%3C/svg%3E") left 7px top 7px / 38px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23dcbc78' stroke-width='1.2'%3E%3Cpath d='M38 22V2H18'/%3E%3Cpath d='M33 14c0-4-3-7-7-7'/%3E%3C/g%3E%3Ccircle cx='33' cy='7' r='2' fill='%23dcbc78'/%3E%3C/svg%3E") right 7px top 7px / 38px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23dcbc78' stroke-width='1.2'%3E%3Cpath d='M2 18v20h20'/%3E%3Cpath d='M7 26c0 4 3 7 7 7'/%3E%3C/g%3E%3Ccircle cx='7' cy='33' r='2' fill='%23dcbc78'/%3E%3C/svg%3E") left 7px bottom 7px / 38px no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23dcbc78' stroke-width='1.2'%3E%3Cpath d='M38 18v20H18'/%3E%3Cpath d='M33 26c0 4-3 7-7 7'/%3E%3C/g%3E%3Ccircle cx='33' cy='33' r='2' fill='%23dcbc78'/%3E%3C/svg%3E") right 7px bottom 7px / 38px no-repeat; }
+.cover-box { border-color: #d9b96f; border-image: linear-gradient(135deg, #f4e3b0, #c19449 30%, #f1dca3 55%, #a8803d 80%, #e9d3a1) 1; box-shadow: 0 0 0 5px rgba(0, 0, 0, .22), inset 0 0 0 1px rgba(0, 0, 0, .25), 0 10px 22px -8px rgba(0, 0, 0, .55); }
+html:not(.a11y-high-contrast) .cover-kicker, html:not(.a11y-high-contrast) .cover-subtitle, html:not(.a11y-high-contrast) .cover-open { color: transparent; background-image: linear-gradient(180deg, #f8e9bd 0%, #e2c27c 45%, #b88d44 55%, #ecd394 100%); -webkit-background-clip: text; background-clip: text; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .45)); }
+html:not(.a11y-high-contrast) .cover-open { border-color: rgba(222, 190, 120, .8); }
+html:not(.a11y-high-contrast) .cover:hover .cover-open, html:not(.a11y-high-contrast) .cover:focus-visible .cover-open { background-image: linear-gradient(180deg, #fff6d8 0%, #f0d48e 50%, #fbe9b8 100%); background-color: transparent; color: transparent; }
+.cover-open { position: relative; }
+.cover-open::after { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(233, 211, 161, 0); transition: background-color .25s ease; }
+.cover:hover .cover-open::after, .cover:focus-visible .cover-open::after { background: rgba(233, 211, 161, .12); }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .cover-frame { background-size: 24px, 24px, 24px, 24px; background-position: left 5px top 5px, right 5px top 5px, left 5px bottom 5px, right 5px bottom 5px; }
+}
