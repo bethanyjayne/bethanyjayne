@@ -1268,6 +1268,10 @@ html:has(body.env-sketch)::before { background: #5f4b37; }
 html:has(body.env-sea)::before, html:has(body.env-shore)::before { background: #123b6b; }
 .site-header { top: var(--safe-top); }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  /* the running head is not sticky on phones, so it must not be pushed down a second time */
+  .site-header, .turn-dest .site-header { top: 0 !important; }
+  /* the chapter label sits in the running head, below the status bar */
+  body:not(.cover-page) > .env-label { top: calc(var(--safe-top) + .95rem); }
   .tab-bar { padding-left: var(--safe-left); padding-right: var(--safe-right); padding-bottom: max(var(--safe-bottom), .35rem); }
   body { padding-bottom: calc(4.4rem + max(var(--safe-bottom), .35rem)); }
   /* the plate viewer fills the screen, so keep its picture and buttons inside the safe area */
