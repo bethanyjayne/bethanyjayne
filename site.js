@@ -60,7 +60,7 @@ if (form && formSuccess) {
     const message = String(data.get('message') || '').trim();
     const subject = `A story waiting to be drawn, from ${name}`;
     const body = `${message}\n\n${name}\n${email}`;
-    window.location.href = `mailto:hello@bethanyjayne.co.uk?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:bethanyjayneillustrations@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     formSuccess.hidden = false;
     formSuccess.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
   });
@@ -217,7 +217,7 @@ if (plates.length && typeof HTMLDialogElement === 'function') {
 function turnPage(href) {
   // Chapters live in their own folders (/about/, /otters/ ...); old .html
   // addresses still count as the same chapter.
-  const chapters = ['', 'about', 'otters', 'pip', 'russel', 'contact'];
+  const chapters = ['', 'about', 'otters', 'pip', 'russell', 'contact'];
   const chapterOf = (url) => chapters.indexOf(url.pathname.replace(/(\/index)?\.html$|\/$/, '').split('/').pop());
   const target = new URL(href, window.location.href);
   const from = chapterOf(new URL(window.location.href));
@@ -660,4 +660,44 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     });
     img.addEventListener('pointerleave', () => { img.classList.remove('is-tilting'); });
   });
+})();
+
+// Web app: an "Install the book" button in the footer where the browser offers
+// installing, and a "Share" button inside the installed app (which has no
+// address bar to copy a link from). Footer buttons on the cover page too.
+(() => {
+  const standalone = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches || navigator.standalone === true;
+  const footers = [...document.querySelectorAll('.footer-links')];
+  const addButton = (label, onClick) => footers.map((links) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'footer-a11y footer-app';
+    button.textContent = label;
+    button.addEventListener('click', onClick);
+    links.appendChild(button);
+    return button;
+  });
+
+  if (!standalone) {
+    let offer = null;
+    let buttons = [];
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      offer = event;
+      if (!buttons.length) {
+        buttons = addButton('Install the book', () => {
+          if (!offer) return;
+          offer.prompt();
+          offer.userChoice.finally(() => { offer = null; buttons.forEach((b) => b.remove()); buttons = []; });
+        });
+      }
+    });
+    window.addEventListener('appinstalled', () => { offer = null; buttons.forEach((b) => b.remove()); buttons = []; });
+  }
+
+  if (standalone && navigator.share) {
+    addButton('Share this page', () => {
+      navigator.share({ title: document.title, url: (document.querySelector('link[rel="canonical"]') || location).href }).catch(() => {});
+    });
+  }
 })();
