@@ -99,7 +99,7 @@ main > section + section { border-top: 1px solid var(--rule); }
 .hero-actions { display: flex; justify-content: center; align-items: center; gap: 1.6rem; flex-wrap: wrap; }
 
 /* Chapter openers (inner pages): illustration left, opening text right */
-.page-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 1fr auto auto auto 1fr; column-gap: var(--gutter); min-height: clamp(560px, 62vw, 880px); }
+.page-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 1fr auto auto auto 1fr; column-gap: var(--gutter); min-height: clamp(560px, min(62vw, 100vh - 12rem), 880px); }
 .page-hero::after { content: ''; grid-column: 1; grid-row: 1 / -1; margin-right: calc(var(--pad) * -1); background: var(--paper-edge) center / cover no-repeat; }
 .page-hero > * { grid-column: 2; margin-right: var(--pad); }
 .page-hero > .eyebrow { grid-row: 2; }
@@ -154,7 +154,7 @@ main > section + section { border-top: 1px solid var(--rule); }
 .contact-list { margin-top: 2.2rem; border-top: 1px solid var(--rule); }
 .contact-item { display: grid; grid-template-columns: 8rem 1fr; align-items: baseline; gap: 1rem; padding: .9rem 0; border-bottom: 1px solid var(--rule); }
 .contact-item strong { color: var(--muted); font-weight: 400; font-size: 1.05rem; }
-.contact-item a { overflow-wrap: anywhere; text-decoration-color: var(--rule); text-underline-offset: .25em; }
+.contact-item a { overflow-wrap: break-word; text-decoration-color: var(--rule); text-underline-offset: .25em; }
 .contact-item a:hover { color: var(--accent); }
 .social-link { display: inline-flex; align-items: center; gap: .5rem; }
 .instagram-icon { flex: none; width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-width: 1.6; }
@@ -1310,3 +1310,33 @@ html.a11y-reduce-motion .reveal.is-pending { opacity: 1; transition: none; }
 /* Pip's opener: the full ADHD with Pip cover (the sharpest Pip artwork), shown
    whole as a mounted plate on a soft wash of its own colours. */
 body.pip-page > .book .page-hero::after, .turn-dest.pip-page .page-hero::after { background: var(--mat) url('./assets/art/pip-opener-1280.webp') center / 92% auto no-repeat; }
+
+/* ============================================================
+   Every device: fit and finish (PR #49)
+   ============================================================ */
+/* Bookshelf: three landscape picture books always fit the shelf,
+   so the last one is never cut off on tablets and small laptops */
+.shelf-row:has(> li:nth-child(3)) { --h: min(clamp(52px, calc((100cqi - 6.4rem) / 3.3), 170px), calc((100cqi - 1.2rem - 3.2rem) / 4.45)); }
+@media (max-width: 760px) {
+  .shelf-row:has(> li:nth-child(3)) { --h: min(clamp(56px, calc((100cqi - 5.4rem) / 3.4), 150px), calc((100cqi - .6rem - 2rem) / 4.45)); }
+}
+/* Contact details: on a narrow page the label sits above the address,
+   so the email and Instagram never break in the middle of a word */
+.contact-list { container-type: inline-size; }
+@container (max-width: 27rem) {
+  .contact-item { grid-template-columns: 1fr; gap: .15rem; }
+  .contact-item strong { font-size: .85rem; letter-spacing: .14em; }
+}
+/* The smallest phones: "Russell" alone in the chapter label,
+   so it never runs into "Children's book illustrator" */
+@media (max-width: 374px) { .env-label .label-more { display: none; } }
+/* Phones turned sideways: numeral and name side by side in a slimmer tab bar */
+@media (max-height: 540px) and (orientation: landscape) {
+  body { padding-bottom: calc(2.8rem + env(safe-area-inset-bottom)); }
+  .tab-bar a { display: flex; justify-content: center; align-items: center; gap: .35rem; min-height: 2.8rem; padding-top: .2rem; padding-bottom: .2rem; }
+}
+/* Desktop contents links: a larger target for mouse and touch screens */
+@media (min-width: 901px) { .nav a { padding-left: .2rem; padding-right: .2rem; } }
+.env-label .label-more { display: inline; padding: 0; border-radius: 0; background: none; box-shadow: none; }
+@media (max-width: 374px) { .env-label .label-more { display: none; } }
+.env-label .label-more::before, .env-label .label-more::after { content: none; display: none; }

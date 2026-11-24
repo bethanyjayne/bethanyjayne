@@ -391,9 +391,9 @@ function turnLeaf({ target, backward, cover, pages, go, dest }) {
     const label = document.querySelector('.env-label span');
     const nextLabel = dest.querySelector('.env-label span');
     if (label && nextLabel && label.animate) {
-      label.dataset.text = label.textContent;
+      label.dataset.text = label.innerHTML;
       label.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' }).finished
-        .then(() => { label.textContent = nextLabel.textContent; label.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: 'forwards' }); })
+        .then(() => { label.innerHTML = nextLabel.innerHTML; label.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: 'forwards' }); })
         .catch(() => {});
     }
     under.appendChild(place(dest, leafLeft, top));
@@ -563,7 +563,7 @@ window.addEventListener('pageshow', (event) => {
   document.documentElement.classList.remove('is-arriving', 'is-turned');
   document.querySelectorAll('.env-label span[data-text]').forEach((label) => {
     label.getAnimations().forEach((animation) => animation.cancel());
-    label.textContent = label.dataset.text;
+    label.innerHTML = label.dataset.text;
   });
   document.querySelectorAll('.cover-tabs, .cover-hint').forEach((el) => el.getAnimations().forEach((animation) => animation.cancel()));
   turnPage.busy = false;
