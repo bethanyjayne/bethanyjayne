@@ -1,0 +1,15 @@
+# Old addresses, from before chapters moved into folders. On GitHub Pages
+# these were tiny forwarding pages; here they are real permanent redirects.
+/about.html            /about/     301
+/contact.html          /contact/   301
+/otters.html           /otters/    301
+/pip.html              /pip/       301
+/childrens-books.html  /otters/    301
+/russell.html          /russell/   301
+/russel.html           /russell/   301
+/russel                /russell/   301
+/russel/*              /russell/   301
+
+# Pages normally redirects /404.html to /404. The service worker saves
+# /404.html for offline use, so serve it at that address without a redirect.
+/404.html              /404        200
