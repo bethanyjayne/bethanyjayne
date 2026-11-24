@@ -1147,3 +1147,21 @@ html.js .cover-box .cover-art, html.js .cover-box .cover-beam { transition: opac
   .cover-page .env-label span { padding: 0; color: #f6e7c1; background: none; box-shadow: none; text-shadow: 0 1px 3px rgba(5, 12, 40, .55); }
   .cover-page .env-label em { font-size: 1.3em; font-style: italic; font-variant-caps: normal; letter-spacing: .03em; }
 }
+
+/* ---------- Design pass (Nov 2026) ---------- */
+/* One navy for every main button, the same as the binding and the labels,
+   so each chapter reads as a page of the same book. */
+.button-primary { border-color: #123b6b; color: #f6e7c1; background: #123b6b; }
+.button-primary:hover { border-color: #0b2a4f; color: #fff; background: #0b2a4f; }
+
+/* Pip's two book pages are landscape: give them landscape mounts and let
+   them fill the page instead of sitting small in portrait frames. */
+.work-grid--wide .plate-frame { aspect-ratio: 4 / 3; padding: 4% 3%; }
+.work-card .work-grid--wide .plate-frame img, .work-grid--wide .work-card .plate-frame img { width: 100%; }
+@media (min-width: 901px) and (min-height: 541px), (min-width: 901px) and (orientation: portrait) {
+  .work-grid--wide > .work-card:nth-child(n) { width: min(100%, 32rem); }
+}
+
+/* Footer: the contents read as words, not tiny capitals. */
+.footer-contents a { font-variant-caps: normal; font-size: 1.12rem; letter-spacing: .01em; }
+.site-footer > span:first-of-type { font-style: italic; font-variant-caps: normal; font-size: 1.05rem; letter-spacing: .01em; }
