@@ -1,0 +1,16 @@
+# Response headers for Cloudflare Pages (https://developers.cloudflare.com/pages/configuration/headers/)
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# The update check and the service worker must always come from the server.
+/version.json
+  Cache-Control: no-store
+/sw.js
+  Cache-Control: no-cache
+
+# Pictures, fonts and video. Replaced pictures get new file names, so a few
+# hours of browser caching is safe and saves re-checking every image.
+/assets/*
+  Cache-Control: public, max-age=14400, stale-while-revalidate=86400
