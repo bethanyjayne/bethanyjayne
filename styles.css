@@ -377,7 +377,9 @@ html.is-arriving .book-pages > * { animation: page-arrive .4s ease both; }
 
   /* Plate viewer fills the screen */
   .plate-viewer { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; }
-  .plate-viewer__img { height: 62dvh; }
+  /* the picture keeps its own shape and sits with its caption in the middle of the screen */
+  .plate-viewer__figure { grid-template-rows: auto auto; align-content: center; }
+  .plate-viewer__img { height: auto; max-height: 62dvh; }
 }
 
 /* ============================================================
@@ -1271,7 +1273,7 @@ html:has(body.env-sea)::before, html:has(body.env-shore)::before { background: #
   body { padding-bottom: calc(4.4rem + max(var(--safe-bottom), .35rem)); }
   /* the plate viewer fills the screen, so keep its picture and buttons inside the safe area */
   .plate-viewer { padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left); }
-  .plate-viewer__img { height: calc(62dvh - var(--safe-top) - var(--safe-bottom)); }
+  .plate-viewer__img { max-height: calc(62dvh - var(--safe-top) - var(--safe-bottom)); }
   /* narrow phones: the six chapter tabs share the width evenly and never spill */
   .tab-bar a { min-width: 0; overflow-wrap: anywhere; }
 }
