@@ -1140,3 +1140,10 @@ html.js .cover-box .cover-art, html.js .cover-box .cover-beam { transition: opac
   .cover-page { display: flow-root; }
   .cover-page .cover-wrap { padding-bottom: 2rem; }
 }
+
+/* The cover's label is a welcome line rather than a chapter name: no pill,
+   cream lettering with hairlines either side, her name in italic. */
+@media (min-width: 901px) and (min-height: 541px), (min-width: 901px) and (orientation: portrait) {
+  .cover-page .env-label span { padding: 0; color: #f6e7c1; background: none; box-shadow: none; text-shadow: 0 1px 3px rgba(5, 12, 40, .55); }
+  .cover-page .env-label em { font-size: 1.3em; font-style: italic; font-variant-caps: normal; letter-spacing: .03em; }
+}
