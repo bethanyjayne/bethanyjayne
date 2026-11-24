@@ -45,6 +45,11 @@ jobs:
         with:
           # Upload entire repository
           path: '.'
+      - name: Wait for the upload to be listed
+        # deploy-pages looks the artifact up straight after the upload, and
+        # GitHub's artifact list can take a few seconds to include it
+        # ("No artifacts named github-pages were found"). A short pause avoids that.
+        run: sleep 20
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
