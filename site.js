@@ -231,6 +231,8 @@ function turnPage(href) {
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-reduce-motion');
   if (!pages || from < 0 || to < 0 || from === to || still) { go(); return; }
   turnPage.busy = true;
+  // Settle any tilt first, so the book turns from where it really lies.
+  document.querySelectorAll('.cover-book').forEach((book) => { book.classList.remove('is-tilting'); book.style.transition = 'none'; book.style.setProperty('--rx', '0deg'); book.style.setProperty('--ry', '0deg'); });
   // Draw the next page first (or give up after a moment and turn onto blank paper).
   const giveUp = new Promise((resolve) => { window.setTimeout(resolve, 400, null); });
   Promise.race([nextPageLayer(target.href), giveUp])
@@ -617,3 +619,45 @@ document.head.appendChild(updateCheck);
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then((reg) => reg.update()).catch(() => {}); });
 }
+
+// Depth: with a mouse, the closed book leans toward the pointer and plates tilt
+// under it. Nothing moves for touch, or when less motion is asked for.
+(() => {
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const calm = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-reduce-motion');
+  const book = document.querySelector('.cover-book');
+  if (book) {
+    let frame = 0;
+    window.addEventListener('pointermove', (event) => {
+      if (!fine.matches || calm() || turnPage.busy || event.pointerType !== 'mouse') return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const r = book.getBoundingClientRect();
+        const x = Math.max(-1, Math.min(1, (event.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2)));
+        const y = Math.max(-1, Math.min(1, (event.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2)));
+        book.classList.add('is-tilting');
+        book.style.setProperty('--ry', `${(x * 6).toFixed(2)}deg`);
+        book.style.setProperty('--rx', `${(-y * 4).toFixed(2)}deg`);
+        book.style.setProperty('--gx', `${(50 + x * 40).toFixed(1)}%`);
+        book.style.setProperty('--gy', `${(40 + y * 40).toFixed(1)}%`);
+      });
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => {
+      book.classList.remove('is-tilting');
+      book.style.setProperty('--rx', '0deg');
+      book.style.setProperty('--ry', '0deg');
+    });
+  }
+  document.querySelectorAll('.work-card .plate-frame img').forEach((img) => {
+    img.addEventListener('pointermove', (event) => {
+      if (!fine.matches || calm() || event.pointerType !== 'mouse') return;
+      const r = img.getBoundingClientRect();
+      const x = (event.clientX - r.left) / r.width - 0.5;
+      const y = (event.clientY - r.top) / r.height - 0.5;
+      img.classList.add('is-tilting');
+      img.style.setProperty('--py', `${(x * 12).toFixed(2)}deg`);
+      img.style.setProperty('--px', `${(-y * 10).toFixed(2)}deg`);
+    });
+    img.addEventListener('pointerleave', () => { img.classList.remove('is-tilting'); });
+  });
+})();

@@ -1165,3 +1165,26 @@ html.js .cover-box .cover-art, html.js .cover-box .cover-beam { transition: opac
 /* Footer: the contents read as words, not tiny capitals. */
 .footer-contents a { font-variant-caps: normal; font-size: 1.12rem; letter-spacing: .01em; }
 .site-footer > span:first-of-type { font-style: italic; font-variant-caps: normal; font-size: 1.05rem; letter-spacing: .01em; }
+
+/* ---------- Depth (Nov 2026) ----------
+   The closed book leans gently toward the pointer with a soft light moving
+   across its board; plates tilt as you move over them; the open book has a
+   thicker block of pages and sits higher above the world. Pointer-driven
+   parts only run with a mouse, and never with reduced motion. */
+.cover-book { --rx: 0deg; --ry: 0deg; transform: perspective(1600px) rotateX(var(--rx)) rotateY(var(--ry)); transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+.cover-book.is-tilting { transition: transform .15s ease-out; }
+.cover::after { content: ''; position: absolute; z-index: 3; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(70% 55% at var(--gx, 30%) var(--gy, 20%), rgba(255, 246, 222, .16), transparent 70%); opacity: var(--glare, .55); transition: opacity .5s ease; }
+.cover-book.is-tilting .cover::after { --glare: 1; }
+.turn-stage .cover-book, .turn-dest .cover-book { transform: none; }
+
+.work-card .plate-frame { perspective: 900px; }
+.work-card .plate-frame img.is-tilting { transform: translateY(-8px) rotateX(var(--px, 0deg)) rotateY(var(--py, 0deg)); transition: transform .12s ease-out, box-shadow .3s ease; }
+
+@media (min-width: 901px) and (min-height: 541px), (min-width: 901px) and (orientation: portrait) {
+  .book { box-shadow: 0 2px 3px rgba(0, 0, 0, .2), 0 18px 30px -14px rgba(5, 12, 40, .45), 0 50px 90px -20px rgba(5, 12, 40, .6); }
+  .book-pages { box-shadow: 0 2px 0 var(--paper-edge), 0 3px 0 #d8cfbe, 0 5px 0 var(--paper-edge), 0 6px 0 #d3c9b6, 0 8px 0 var(--paper-edge), 0 9px 0 #cfc4af, 0 11px 0 var(--paper-edge), 0 12px 0 #cabfa8; }
+  /* the pages curve down into the spine and up to the fore-edge */
+  .book-pages::before { background: linear-gradient(90deg, rgba(70, 50, 25, .1), rgba(255, 255, 255, .0) 3%, transparent 46%, rgba(255, 255, 255, .25) 48.5%, transparent 50%, rgba(255, 255, 255, .25) 51.5%, transparent 54%, transparent 97%, rgba(70, 50, 25, .1)); }
+}
+@media (prefers-reduced-motion: reduce) { .cover-book, .work-card .plate-frame img.is-tilting { transition: none; } }
+html.a11y-reduce-motion .cover-book { transform: none; transition: none; }
