@@ -1135,3 +1135,9 @@ html.js .cover-box .cover-art, html.js .cover-box .cover-beam { transition: opac
   .env-label, .env-sketch .env-label { color: #f6e7c1; text-shadow: none; }
   .env-label span, .env-sketch .env-label span { color: #f6e7c1; background: var(--cover); box-shadow: inset 0 0 0 1px rgba(246, 231, 193, .28), 0 4px 14px -6px rgba(5, 12, 40, .55); }
 }
+
+/* Desktop cover: the whole cover fits on screen, with no stray scrollbar. */
+@media (min-width: 901px) and (min-height: 541px) {
+  .cover-page { display: flow-root; }
+  .cover-page .cover-wrap { padding-bottom: 2rem; }
+}
