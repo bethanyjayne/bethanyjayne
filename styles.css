@@ -846,10 +846,10 @@ body::after { content: ''; position: fixed; z-index: -1; inset: 0; background: v
 .pip-page .page-hero::after { background: url('./assets/art/pip-scene-1280.webp') center / cover no-repeat; }
 .contact-page .page-hero::after { background: url('./assets/art/otters-scene-1280.webp') center / cover no-repeat; }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
-  .about-page .page-hero::after { background-image: url('./assets/art/otter-waving-640.webp'); }
-  .otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-640.webp'); }
-  .pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-640.webp'); }
-  .contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-640.webp'); }
+  .about-page .page-hero::after { background-image: url('./assets/art/otter-waving-1280.webp'); }
+  .otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-1280.webp'); }
+  .pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-1280.webp'); }
+  .contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-1280.webp'); }
 }
 /* Sections below the fold skip rendering work until they are scrolled near */
 main > section + section { content-visibility: auto; contain-intrinsic-size: auto 900px; }
@@ -1082,10 +1082,10 @@ body::after { z-index: -2; }
 .turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-1280.webp'); }
 .turn-dest.russell-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
-  .turn-dest.about-page .page-hero::after { background-image: url('./assets/art/otter-waving-640.webp'); }
-  .turn-dest.otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-640.webp'); }
-  .turn-dest.pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-640.webp'); }
-  .turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-640.webp'); }
+  .turn-dest.about-page .page-hero::after { background-image: url('./assets/art/otter-waving-1280.webp'); }
+  .turn-dest.otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-1280.webp'); }
+  .turn-dest.pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-1280.webp'); }
+  .turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-1280.webp'); }
   .turn-dest.russell-page .page-hero::after { font-size: 1.3rem; }
 }
 /* Running heads: the name sits on the left page and the contents on the right
@@ -1234,9 +1234,8 @@ html:not(.a11y-high-contrast) .cover:hover .cover-open, html:not(.a11y-high-cont
    ============================================================ */
 .env-shore { --env-bg: linear-gradient(rgba(6, 22, 52, .1), rgba(6, 22, 52, .38)), url('./assets/backdrops/sea.jpg') center / cover; --cover: #123b6b; --cover-deep: #0c2a4f; --accent: #7a4f26; }
 html:has(body.env-shore) { background: #123b6b; }
-.russell-page .page-hero::after, .turn-dest.russell-page .page-hero::after { content: ''; display: block; color: inherit; font-size: inherit; font-style: inherit; background: #b9d6ee url('./assets/art/russell-cover-1280.webp') 96% 100% / auto 150% no-repeat; }
+.russell-page .page-hero::after, .turn-dest.russell-page .page-hero::after { content: ''; display: block; color: inherit; font-size: inherit; font-style: inherit; background: #b9d6ee url('./assets/art/russell-cover-2560.webp') 96% 100% / auto 150% no-repeat; }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
-  .russell-page .page-hero::after, .turn-dest.russell-page .page-hero::after { background-image: url('./assets/art/russell-cover-640.webp'); }
 }
 .character-art--wide { width: 100%; }
 .film-frame { margin: 0; align-self: center; }
@@ -1290,4 +1289,10 @@ html:has(body.env-sea)::before, html:has(body.env-shore)::before { background: #
 }
 @media (max-width: 360px) {
   .tab-bar a { font-size: .74rem; }
+}
+/* The next page drawn during a page turn gets the same safe-area padding as
+   the real page, so it lands exactly where the page then loads (no jump). */
+.turn-dest { box-sizing: border-box; padding-top: var(--safe-top); padding-left: var(--safe-left); padding-right: var(--safe-right); }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  .turn-dest:not(.cover-page) > .env-label { top: calc(var(--safe-top) + .95rem); }
 }
