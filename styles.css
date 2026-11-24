@@ -1340,3 +1340,59 @@ body.pip-page > .book .page-hero::after, .turn-dest.pip-page .page-hero::after {
 .env-label .label-more { display: inline; padding: 0; border-radius: 0; background: none; box-shadow: none; }
 @media (max-width: 374px) { .env-label .label-more { display: none; } }
 .env-label .label-more::before, .env-label .label-more::after { content: none; display: none; }
+
+/* ============================================================
+   The book in the hand (interactive book pass)
+   ============================================================ */
+/* Desktop: the next and previous chapters stick out from the page edges as
+   paper tabs, like the tabs on the cover, so the page can be turned from
+   anywhere in a chapter. Purple only on the arrow, as a quiet accent. */
+.edge-tab { display: none; }
+@media (min-width: 901px) and (min-height: 541px) {
+  .edge-tab { position: fixed; z-index: 60; top: 50%; display: flex; flex-direction: column; align-items: center; gap: .55rem; width: 2.5rem; padding: 1rem 0 1.1rem; color: var(--ink); font-size: 1rem; line-height: 1; text-decoration: none; letter-spacing: .04em; white-space: nowrap; background: linear-gradient(90deg, var(--paper-edge), var(--paper) 45%); box-shadow: 0 6px 14px -6px rgba(5, 12, 40, .55), inset 0 0 0 1px rgba(31, 35, 64, .06); opacity: .92; transform: translate(0, -50%); transition: width .25s cubic-bezier(.2, .8, .2, 1), transform .3s ease, opacity .3s ease, box-shadow .25s ease; }
+  .edge-tab--next { border-radius: 0 9px 9px 0; }
+  .edge-tab--prev { border-radius: 9px 0 0 9px; background: linear-gradient(270deg, var(--paper-edge), var(--paper) 45%); }
+  .edge-tab__name { writing-mode: vertical-rl; font-variant-caps: all-small-caps; font-size: 1.1rem; letter-spacing: .12em; }
+  .edge-tab--prev .edge-tab__name { transform: rotate(180deg); }
+  .edge-tab__arrow { width: 1rem; height: 1rem; color: #6d4c9c; transition: transform .25s ease; }
+  .edge-tab:hover, .edge-tab:focus-visible { width: 2.9rem; opacity: 1; box-shadow: 0 10px 20px -8px rgba(5, 12, 40, .6), inset 0 0 0 1px rgba(31, 35, 64, .08); }
+  .edge-tab--next:hover .edge-tab__arrow { transform: translateX(2px); }
+  .edge-tab--prev:hover .edge-tab__arrow { transform: translateX(-2px); }
+  /* out of the way while a page turns, and once the corner links are in view */
+  .edge-tab.is-resting, .is-turning-page .edge-tab { opacity: 0; pointer-events: none; }
+  .edge-tab--next.is-resting, .is-turning-page .edge-tab--next { transform: translate(-100%, -50%); }
+  .edge-tab--prev.is-resting, .is-turning-page .edge-tab--prev { transform: translate(100%, -50%); }
+}
+@media (prefers-reduced-motion: reduce) { .edge-tab, .edge-tab__arrow { transition: none; } }
+html.a11y-reduce-motion .edge-tab, html.a11y-reduce-motion .edge-tab__arrow { transition: none; }
+.turn-clone .edge-tab, .turn-dest .edge-tab { display: none; }
+
+/* Phones: the edge of the next page follows a sideways swipe; once it is
+   pulled far enough it turns navy, and letting go turns the page. */
+.swipe-peek { position: fixed; z-index: 950; top: 50%; --pull: 0; pointer-events: none; }
+.swipe-peek span { display: block; padding: .8rem 1.1rem .85rem; color: var(--ink); font-size: 1.15rem; line-height: 1.15; white-space: nowrap; background: var(--paper); box-shadow: 0 10px 26px -8px rgba(5, 12, 40, .5), inset 0 0 0 1px rgba(31, 35, 64, .08); transition: background-color .18s ease, color .18s ease; }
+.swipe-peek small { display: block; margin-bottom: .15rem; color: var(--muted); font-size: .8rem; font-variant-caps: all-small-caps; letter-spacing: .14em; transition: color .18s ease; }
+.swipe-peek--next { right: 0; transform: translate(calc((1 - var(--pull)) * 100%), -50%); }
+.swipe-peek--next span { border-radius: 12px 0 0 12px; text-align: right; }
+.swipe-peek--prev { left: 0; transform: translate(calc((var(--pull) - 1) * 100%), -50%); }
+.swipe-peek--prev span { border-radius: 0 12px 12px 0; }
+.swipe-peek { opacity: 0; transition: opacity .2s ease; }
+.swipe-peek.is-showing { opacity: 1; }
+.swipe-peek.is-ready span { color: #fff; background: var(--cover); }
+.swipe-peek.is-ready small { color: rgba(255, 255, 255, .75); }
+/* a soft shadow along the screen edge, as if the page were lifting */
+.swipe-peek::before { content: ''; position: fixed; top: -50vh; bottom: -50vh; width: 3.5rem; opacity: calc(var(--pull) * .9); pointer-events: none; }
+.swipe-peek--next::before { right: 0; background: linear-gradient(270deg, rgba(31, 35, 64, .16), transparent); }
+.swipe-peek--prev::before { left: 0; background: linear-gradient(90deg, rgba(31, 35, 64, .16), transparent); }
+
+/* Desktop: the plates are a spread of their own, so a section's title never
+   sits under the page numbers of the spread before it */
+@media (min-width: 901px) and (min-height: 541px), (min-width: 901px) and (orientation: portrait) {
+  main > section + .plates-section { border-top: 1px solid var(--rule); padding-top: 4.5rem; }
+}
+
+/* Tablets held upright: the chapter's opening words line up with the
+   centred column of every page after them */
+@media (min-width: 600px) and (max-width: 900px) and (orientation: portrait) {
+  .page-hero > :not(.page-num) { margin-left: max(0px, calc((100% - 40rem) / 2)); }
+}
