@@ -37,7 +37,17 @@ if ('IntersectionObserver' in window) {
       }
     });
   }, { threshold: 0.12 });
-  reveals.forEach((element) => observer.observe(element));
+  // Only sections still below the screen fade in as they arrive; anything
+  // already on screen when the page opens is shown at once, so a page never
+  // flashes blank paper before its opening picture and words appear.
+  reveals.forEach((element) => {
+    if (element.getBoundingClientRect().top > window.innerHeight) {
+      element.classList.add('is-pending');
+      observer.observe(element);
+    } else {
+      element.classList.add('is-visible');
+    }
+  });
 } else {
   reveals.forEach((element) => element.classList.add('is-visible'));
 }

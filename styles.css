@@ -593,7 +593,6 @@ html:has(body.env-meadow) { background: #4f9a3a; }
    ============================================================ */
 .about-page .page-hero::after { background: url('./assets/art/otter-waving-1280.webp') center / cover no-repeat; }
 .otters-page .page-hero::after { background: url('./assets/art/otters-stone-1280.webp') center / cover no-repeat; }
-.russell-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
 
 /* Russell's chapter: warm sketchbook paper until the artwork arrives */
 .env-sketch { --env-bg: repeating-linear-gradient(0deg, transparent 0 39px, rgba(90, 70, 40, .07) 39px 40px), linear-gradient(180deg, #e9e1d1, #d5c8b1); --cover: #5f4b37; --cover-deep: #463626; --paper: #fcf8f0; --mat: #f2eadc; --accent: #7a5332; --primary: #6b4a2a; --primary-deep: #523820; }
@@ -621,7 +620,6 @@ main > section + .plates-section { border-top: 0; padding-top: 0; }
   .tab-bar a { font-size: .82rem; padding: .4rem 0; }
   .cover-tabs { flex-wrap: wrap; }
   .cover-tabs a { padding: .55rem .75rem; }
-  .russell-page .page-hero::after { font-size: 1.3rem; }
 }
 .nav a { white-space: nowrap; }
 .nav { gap: 1.2rem; font-size: 1.04rem; }
@@ -1080,13 +1078,11 @@ body::after { z-index: -2; }
 .turn-dest.otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-1280.webp'); }
 .turn-dest.pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-1280.webp'); }
 .turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-1280.webp'); }
-.turn-dest.russell-page .page-hero::after { content: 'Still being drawn'; display: grid; place-items: center; color: rgba(70, 52, 32, .5); font-size: 1.7rem; font-style: italic; background: repeating-linear-gradient(0deg, transparent 0 33px, rgba(90, 70, 40, .12) 33px 34px), radial-gradient(circle at 50% 45%, #f7f1e4, #e7dcc7); }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
   .turn-dest.about-page .page-hero::after { background-image: url('./assets/art/otter-waving-1280.webp'); }
   .turn-dest.otters-page .page-hero::after { background-image: url('./assets/art/otters-stone-1280.webp'); }
   .turn-dest.pip-page .page-hero::after { background-image: url('./assets/art/pip-scene-1280.webp'); }
   .turn-dest.contact-page .page-hero::after { background-image: url('./assets/art/otters-scene-1280.webp'); }
-  .turn-dest.russell-page .page-hero::after { font-size: 1.3rem; }
 }
 /* Running heads: the name sits on the left page and the contents on the right
    page, lined up with the chapter text below and never crossing the spine. */
@@ -1144,8 +1140,8 @@ html.js .cover-box .cover-art, html.js .cover-box .cover-beam { transition: opac
 /* The cover's label is a welcome line rather than a chapter name: no pill,
    cream lettering with hairlines either side, her name in italic. */
 @media (min-width: 901px) and (min-height: 541px), (min-width: 901px) and (orientation: portrait) {
-  .cover-page .env-label span { padding: 0; color: #f6e7c1; background: none; box-shadow: none; text-shadow: 0 1px 3px rgba(5, 12, 40, .55); }
-  .cover-page .env-label em { font-size: 1.3em; font-style: italic; font-variant-caps: normal; letter-spacing: .03em; }
+  body.cover-page > .env-label span { padding: 0; color: #f6e7c1; background: none; box-shadow: none; text-shadow: 0 1px 3px rgba(5, 12, 40, .55); }
+  body.cover-page > .env-label em { font-size: 1.3em; font-style: italic; font-variant-caps: normal; letter-spacing: .03em; }
 }
 
 /* ---------- Design pass (Nov 2026) ---------- */
@@ -1234,7 +1230,7 @@ html:not(.a11y-high-contrast) .cover:hover .cover-open, html:not(.a11y-high-cont
    ============================================================ */
 .env-shore { --env-bg: linear-gradient(rgba(6, 22, 52, .1), rgba(6, 22, 52, .38)), url('./assets/backdrops/sea.jpg') center / cover; --cover: #123b6b; --cover-deep: #0c2a4f; --accent: #7a4f26; }
 html:has(body.env-shore) { background: #123b6b; }
-.russell-page .page-hero::after, .turn-dest.russell-page .page-hero::after { content: ''; display: block; color: inherit; font-size: inherit; font-style: inherit; background: #b9d6ee url('./assets/art/russell-cover-2560.webp') 96% 100% / auto 150% no-repeat; }
+body.russell-page > .book .page-hero::after, .turn-dest.russell-page .page-hero::after { content: ''; display: block; color: inherit; font-size: inherit; font-style: inherit; background: #b9d6ee url('./assets/art/russell-cover-2560.webp') 96% 100% / auto 150% no-repeat; }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
 }
 .character-art--wide { width: 100%; }
@@ -1295,4 +1291,15 @@ html:has(body.env-sea)::before, html:has(body.env-shore)::before { background: #
 .turn-dest { box-sizing: border-box; padding-top: var(--safe-top); padding-left: var(--safe-left); padding-right: var(--safe-right); }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
   .turn-dest:not(.cover-page) > .env-label { top: calc(var(--safe-top) + .95rem); }
+}
+
+/* Page loads: sections on screen when a page opens are drawn straight away;
+   only those further down fade in (site.js marks them .is-pending). */
+.reveal { opacity: 1; transition: none; }
+.reveal.is-pending { opacity: 0; transition: opacity .9s ease; }
+.reveal.is-pending.is-visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .reveal.is-pending { opacity: 1; transition: none; } }
+html.a11y-reduce-motion .reveal.is-pending { opacity: 1; transition: none; }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
+  body.russell-page > .book .page-hero::after, .turn-dest.russell-page .page-hero::after { background-image: url('./assets/art/russell-cover-1920.webp'); }
 }
