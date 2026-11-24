@@ -73,6 +73,17 @@
       ]
     },
     {
+      "name": "Russell's Adventure",
+      "short_name": "Russell",
+      "url": "/russell/",
+      "icons": [
+        {
+          "src": "assets/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
       "name": "Contact",
       "url": "/contact/",
       "icons": [
