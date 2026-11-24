@@ -241,6 +241,7 @@ function turnPage(href) {
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-reduce-motion');
   if (!pages || from < 0 || to < 0 || from === to || still) { go(); return; }
   turnPage.busy = true;
+  document.documentElement.classList.add('is-turning-page');
   // Settle any tilt first, so the book turns from where it really lies.
   document.querySelectorAll('.cover-book').forEach((book) => { book.classList.remove('is-tilting'); book.style.transition = 'none'; book.style.setProperty('--rx', '0deg'); book.style.setProperty('--ry', '0deg'); });
   // Draw the next page first (or give up after a moment and turn onto blank paper).
@@ -567,6 +568,7 @@ window.addEventListener('pageshow', (event) => {
   });
   document.querySelectorAll('.cover-tabs, .cover-hint').forEach((el) => el.getAnimations().forEach((animation) => animation.cancel()));
   turnPage.busy = false;
+  document.documentElement.classList.remove('is-turning-page');
 });
 
 // Every link to another chapter turns the page.
@@ -580,25 +582,116 @@ document.addEventListener('click', (event) => {
   turnPage(url.href);
 });
 
-// On a phone, swipe left or right across the page to turn it.
+// On a phone, swipe left or right across the page to turn it. The next page's
+// edge follows the finger, so the reader can see the turn coming (and let go
+// early to stay put). A slow, deliberate drag counts as well as a flick.
 (() => {
   let start = null;
+  let peek = null;
+  const linkFor = (dx) => document.querySelector(`a[rel="${dx < 0 ? 'next' : 'prev'}"]`);
+  const nameOf = (link) => {
+    const label = link.getAttribute('aria-label') || '';
+    return label.replace(/^(Next|Previous|Back to):?\s*/i, '');
+  };
+  const clear = () => {
+    if (!peek) return;
+    const old = peek;
+    peek = null;
+    old.classList.remove('is-showing', 'is-ready');
+    old.style.removeProperty('--pull');
+    window.setTimeout(() => old.remove(), 260);
+  };
   document.addEventListener('touchstart', (event) => {
     const touch = event.touches[0];
-    start = event.touches.length === 1 && !event.target.closest('.work-grid, dialog, input, textarea')
-      ? { x: touch.clientX, y: touch.clientY, time: Date.now() } : null;
+    clear();
+    start = event.touches.length === 1 && !event.target.closest('.work-grid, dialog, input, textarea, video, .a11y-panel')
+      ? { x: touch.clientX, y: touch.clientY, time: Date.now(), sideways: null } : null;
   }, { passive: true });
-  document.addEventListener('touchend', (event) => {
+  document.addEventListener('touchmove', (event) => {
+    if (!start || turnPage.busy) return;
+    const touch = event.touches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    // Decide once, early on, whether this is a sideways swipe or a scroll.
+    if (start.sideways === null && Math.hypot(dx, dy) > 14) start.sideways = Math.abs(dx) > Math.abs(dy) * 1.6;
+    if (!start.sideways) return;
+    const link = linkFor(dx);
+    if (!link) { clear(); return; }
+    const side = dx < 0 ? 'next' : 'prev';
+    if (!peek || peek.dataset.side !== side) {
+      clear();
+      peek = document.createElement('div');
+      peek.className = `swipe-peek swipe-peek--${side}`;
+      peek.dataset.side = side;
+      peek.setAttribute('aria-hidden', 'true');
+      const back = /^back to/i.test(link.getAttribute('aria-label') || '');
+      const word = side === 'next' ? 'Next' : (back ? 'Back to' : 'Previous');
+      const name = back ? 'the cover' : nameOf(link);
+      peek.innerHTML = `<span><small>${word}</small>${side === 'next' ? `${name}&nbsp;&rarr;` : `&larr;&nbsp;${name}`}</span>`;
+      document.body.appendChild(peek);
+      requestAnimationFrame(() => peek && peek.classList.add('is-showing'));
+    }
+    const pull = Math.min(1, Math.abs(dx) / 110);
+    peek.style.setProperty('--pull', pull.toFixed(3));
+    peek.classList.toggle('is-ready', pull >= 1);
+  }, { passive: true });
+  const end = (event) => {
     if (!start) return;
     const touch = event.changedTouches[0];
     const dx = touch.clientX - start.x;
     const dy = touch.clientY - start.y;
     const quick = Date.now() - start.time < 600;
+    const sideways = start.sideways !== false && Math.abs(dx) >= Math.abs(dy) * 1.6;
     start = null;
-    if (!quick || Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8) return;
-    const link = document.querySelector(`a[rel="${dx < 0 ? 'next' : 'prev'}"]`);
+    const far = Math.abs(dx) >= 110 || (quick && Math.abs(dx) >= 70);
+    const link = sideways && far ? linkFor(dx) : null;
+    clear();
     if (link) turnPage(link.href);
-  }, { passive: true });
+  };
+  document.addEventListener('touchend', end, { passive: true });
+  document.addEventListener('touchcancel', () => { start = null; clear(); }, { passive: true });
+})();
+
+// Beside the open book on a desktop, the next and previous chapters stick out
+// as tabs from the page edges, like the tabs on the cover, so a reader can turn
+// the page from anywhere in a chapter without scrolling to the corner.
+(() => {
+  const book = document.querySelector('.book');
+  const tabs = document.querySelectorAll('.tab-bar a');
+  if (!book || !tabs.length) return;
+  const made = [['prev', 'Previous'], ['next', 'Next']].map(([rel, word]) => {
+    const link = document.querySelector(`.page-turns a[rel="${rel}"]`);
+    if (!link) return null;
+    const tab = [...tabs].find((a) => a.pathname === link.pathname);
+    const numeral = tab && tab.querySelector('b') ? tab.querySelector('b').textContent.trim() : '';
+    const name = tab ? tab.textContent.replace(numeral, '').trim() : link.textContent.trim();
+    const edge = document.createElement('a');
+    edge.className = `edge-tab edge-tab--${rel}`;
+    edge.href = link.href;
+    edge.tabIndex = -1;
+    edge.setAttribute('aria-hidden', 'true');
+    edge.title = `${word}: ${name}`;
+    edge.innerHTML = `<svg class="edge-tab__arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="${rel === 'next' ? 'M6 3.5 10.5 8 6 12.5' : 'M10 3.5 5.5 8 10 12.5'}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="edge-tab__name">${numeral && numeral !== '\u2767' ? `${numeral}&ensp;` : ''}${name}</span>`;
+    document.body.appendChild(edge);
+    return edge;
+  }).filter(Boolean);
+  if (!made.length) return;
+  const place = () => {
+    const r = book.getBoundingClientRect();
+    made.forEach((edge) => {
+      edge.style.left = edge.classList.contains('edge-tab--next') ? `${Math.round(r.right)}px` : '';
+      edge.style.right = edge.classList.contains('edge-tab--prev') ? `${Math.round(window.innerWidth - r.left)}px` : '';
+    });
+  };
+  place();
+  window.addEventListener('resize', place, { passive: true });
+  // Step aside while a page is turning, and when the corner links are on screen.
+  const corners = document.querySelector('.page-turns');
+  if (corners && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      made.forEach((edge) => edge.classList.toggle('is-resting', entry.isIntersecting));
+    }).observe(corners);
+  }
 })();
 
 // Fetch the neighbouring chapters early so the next page is ready when it turns.
