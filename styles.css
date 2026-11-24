@@ -1303,3 +1303,7 @@ html.a11y-reduce-motion .reveal.is-pending { opacity: 1; transition: none; }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) {
   body.russell-page > .book .page-hero::after, .turn-dest.russell-page .page-hero::after { background-image: url('./assets/art/russell-cover-1920.webp'); }
 }
+
+/* Two flip-through films side by side: one on each page of the spread */
+.film-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); row-gap: 2rem; }
+@media (max-width: 900px), (max-height: 540px) and (orientation: landscape) { .film-pair { grid-template-columns: 1fr; } }
