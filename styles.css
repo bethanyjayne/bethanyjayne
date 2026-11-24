@@ -1307,3 +1307,6 @@ html.a11y-reduce-motion .reveal.is-pending { opacity: 1; transition: none; }
 /* Two flip-through films side by side: one on each page of the spread */
 .film-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--gutter); row-gap: 2rem; }
 @media (max-width: 900px), (max-height: 540px) and (orientation: landscape) { .film-pair { grid-template-columns: 1fr; } }
+/* Pip's opener: the full ADHD with Pip cover (the sharpest Pip artwork), shown
+   whole as a mounted plate on a soft wash of its own colours. */
+body.pip-page > .book .page-hero::after, .turn-dest.pip-page .page-hero::after { background: var(--mat) url('./assets/art/pip-opener-1280.webp') center / 92% auto no-repeat; }
